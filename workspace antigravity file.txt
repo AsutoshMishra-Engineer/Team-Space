@@ -1,0 +1,182 @@
+# Team Workspace Website — Updated Implementation Plan
+
+> [!TIP]
+> **Simplified for beginners.** No CLI tools, no Docker, no Edge Functions. You just paste SQL, copy 2 keys, and run 2 commands.
+
+---
+
+## Changes from Original Spec
+
+| What Changed | Why |
+|-------------|-----|
+| Login now requires **User ID + Password** (not just User ID) | Removes the need for Edge Functions, Supabase CLI, and Docker. Also more secure. |
+| "Forgot User ID" sends email via **Supabase's built-in password reset flow** | No Edge Functions needed |
+| Admin Dashboard | **Skipped for now** — can be added later |
+| Deployment | **Vercel** (free, connect GitHub, auto-deploys) |
+
+Everything else from your spec stays exactly the same.
+
+---
+
+## What YOU Need to Do (Step by Step)
+
+### Step 1: Install Node.js (one time)
+1. Go to [nodejs.org](https://nodejs.org)
+2. Download the **LTS** version (the big green button)
+3. Run the installer — click "Next" on everything, all defaults are fine
+4. When done, open a terminal (PowerShell) and type: `node --version`
+5. If you see a number like `v20.x.x`, you're good
+
+### Step 2: Create Supabase Project (one time)
+1. Go to [supabase.com](https://supabase.com) and sign up (free)
+2. Click **"New Project"**
+3. Pick any name (like "team-workspace")
+4. Set a **database password** (save it somewhere safe — you won't need it in the code, but don't lose it)
+5. Pick the region closest to you
+6. Wait ~2 minutes for it to create
+
+### Step 3: Copy 2 Values (one time)
+1. In your Supabase dashboard, go to **Settings → API**
+2. Copy the **Project URL** — looks like `https://xxxxx.supabase.co`
+3. Copy the **anon/public key** — a long string starting with `eyJ...`
+4. Paste both into the `.env` file I'll create for you (I'll show you exactly where)
+
+### Step 4: Run SQL Script (one time)
+1. In Supabase dashboard, go to **SQL Editor**
+2. Click **"New Query"**
+3. Paste the entire SQL file I'll give you
+4. Click **"Run"**
+5. You should see "Success" — that's it!
+
+### Step 5: Configure Supabase Auth Settings (one time)
+1. In Supabase dashboard, go to **Authentication → URL Configuration**
+2. Set **Site URL** to `http://localhost:5173`
+3. Add `http://localhost:5173/**` to **Redirect URLs**
+4. Go to **Authentication → Providers → Email**
+5. Make sure "Enable Email Provider" is ON
+6. Make sure "Confirm email" is ON
+
+### Step 6: Run the Website (every time you want to work on it)
+1. Open PowerShell in the project folder
+2. Type: `npm install` (first time only)
+3. Type: `npm run dev`
+4. Open the URL shown in the terminal (usually `http://localhost:5173`)
+
+### Step 7: Deploy to Vercel (one time, when ready)
+1. Push code to GitHub (I'll help you with this)
+2. Go to [vercel.com](https://vercel.com), sign in with GitHub
+3. Click "Import Project", pick your repo
+4. Add the 2 environment variables (URL + Key)
+5. Click Deploy — done! You get a live URL
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Vite + React (JavaScript) |
+| Styling | Vanilla CSS (modern, premium dark theme) |
+| Routing | React Router v7 |
+| Auth | Supabase Auth (email + password) |
+| Database | Supabase PostgreSQL with Row Level Security |
+| File Storage | Supabase Storage (private bucket + signed URLs) |
+| Deployment | Vercel (free tier) |
+
+---
+
+## Database Schema (6 Tables)
+
+| Table | Purpose |
+|-------|---------|
+| `profiles` | User profiles with custom User ID (`NNNLLNN` format) |
+| `teams` | Team records with auto-generated Team Code (`NNNLL` format) |
+| `team_members` | Who belongs to which team, their role and status |
+| `announcements` | Team announcements with optional deadlines |
+| `chat_messages` | Team chat messages |
+| `team_files` | File metadata (actual files in Supabase Storage) |
+
+Auto-generated via database triggers:
+- **User ID** (`304TX58`) — created when email is verified
+- **Team Code** (`582QK`) — created when a team is created
+
+---
+
+## Pages I'll Build
+
+### Public Pages
+| Page | Description |
+|------|------------|
+| **Landing Page** | Hero section, Login & Register buttons |
+| **Register** | Email + password form, sends verification email |
+| **Login** | User ID + password form, "Forgot User ID" link |
+| **Auth Callback** | Handles email verification redirect, shows User ID |
+
+### Protected Pages (must be logged in)
+| Page | Description |
+|------|------------|
+| **My Teams** | List of user's teams + Create/Join buttons |
+| **Create Team** | Team name, project idea, optional invite by User ID |
+| **Join Team** | Enter Team Code (must be pre-invited) |
+| **Team Workspace** | Info bar, announcements, chat, files, leave team |
+
+---
+
+## File Structure
+
+```
+d:\workspace project\
+├── index.html
+├── package.json
+├── vite.config.js
+├── .env.example              ← Copy to .env + add your Supabase keys
+├── supabase/
+│   └── schema.sql             ← Paste this into Supabase SQL Editor
+└── src/
+    ├── main.jsx
+    ├── App.jsx
+    ├── index.css              ← Full design system
+    ├── lib/
+    │   └── supabase.js        ← Supabase client (reads your .env keys)
+    ├── context/
+    │   └── AuthContext.jsx     ← Login state management
+    ├── components/
+    │   ├── Layout.jsx
+    │   ├── ProtectedRoute.jsx
+    │   ├── TeamInfoBar.jsx
+    │   ├── ManageMembers.jsx
+    │   ├── Announcements.jsx
+    │   ├── TeamChat.jsx
+    │   ├── SharedFiles.jsx
+    │   └── LeaveTeam.jsx
+    └── pages/
+        ├── LandingPage.jsx
+        ├── RegisterPage.jsx
+        ├── LoginPage.jsx
+        ├── AuthCallbackPage.jsx
+        ├── MyTeamsPage.jsx
+        ├── CreateTeamPage.jsx
+        ├── JoinTeamPage.jsx
+        └── TeamWorkspacePage.jsx
+```
+
+**Total: ~20 files.** I build all of them. You touch zero code.
+
+---
+
+## Verification Plan
+
+After building, I'll run `npm run build` to verify everything compiles. Then you test:
+
+1. Register 2-3 accounts with real emails
+2. Verify emails → see your User IDs
+3. Log in with User ID + password
+4. Create a team → get a Team Code
+5. Invite members by User ID → they show as Pending
+6. Members join with Team Code → become Active
+7. Post announcements (Leader only)
+8. Send chat messages (everyone)
+9. Upload and download files
+10. Test leave team flow
+
+If anything breaks, just tell me what happened and I'll fix it.
