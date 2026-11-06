@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import NotificationPreferences from './NotificationPreferences';
 
 const COLOR_OPTIONS = [
   { name: 'Indigo', swatch: '#6C63FF', label: 'Indigo' },
@@ -109,6 +110,13 @@ export default function PersonalSettings({ onClose }) {
             onClick={() => setActiveTab('profile_info')}
           >
             👤 Account Details
+          </button>
+          <button
+            type="button"
+            className={`pro-settings-tab ${activeTab === 'notifications' ? 'pro-tab-active' : ''}`}
+            onClick={() => setActiveTab('notifications')}
+          >
+            🔔 Push Notifications
           </button>
         </div>
 
@@ -246,6 +254,20 @@ export default function PersonalSettings({ onClose }) {
                     <div className="pro-account-val">Cloud Storage Drive (Active)</div>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'notifications' && (
+            <div className="pro-settings-section-group">
+              <div className="pro-settings-block">
+                <div className="pro-block-header">
+                  <div>
+                    <h4>Android Push Notifications & System Alerts</h4>
+                    <p>Configure closed-browser push delivery, multi-device sync, and category alerts.</p>
+                  </div>
+                </div>
+                <NotificationPreferences />
               </div>
             </div>
           )}

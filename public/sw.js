@@ -1,4 +1,4 @@
-// TeamSpace Service Worker for Web Push & Mobile Background Notifications
+// TeamSpace Production Service Worker for Android Web Push
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
@@ -11,17 +11,30 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
     const { title, options } = event.data;
-    self.registration.showNotification(title || '📢 TeamSpace Announcement', options || {});
+    const origin = self.location.origin;
+    const resolvedOptions = {
+      icon: origin + '/logo.png',
+      badge: origin + '/logo.png',
+      vibrate: [300, 100, 300, 100, 300],
+      renotify: true,
+      requireInteraction: true,
+      silent: false,
+      ...options
+    };
+    self.registration.showNotification(title || '📢 TeamSpace Alert', resolvedOptions);
   }
 });
 
-// Listen for Web Push events from the server (even when browser is completely closed)
+// Listen for Web Push events from Google FCM (even when Chrome/App is completely closed)
 self.addEventListener('push', (event) => {
+  const origin = self.location.origin;
   let data = {
-    title: '📢 TeamSpace Announcement',
-    body: 'New update from your team leader!',
-    icon: '/logo.png',
-    badge: '/logo.png'
+    title: '📢 TeamSpace Alert',
+    body: 'New update from your team workspace!',
+    icon: origin + '/logo.png',
+    badge: origin + '/logo.png',
+    url: '/',
+    tag: 'teamspace-alert'
   };
 
   try {
@@ -35,15 +48,23 @@ self.addEventListener('push', (event) => {
     }
   }
 
+  const iconUrl = origin + '/logo.png';
   const options = {
     body: data.body,
-    icon: data.icon || '/logo.png',
-    badge: data.badge || '/logo.png',
-    tag: data.tag || 'teamspace-announcement',
+    icon: iconUrl,
+    badge: iconUrl,
+    tag: data.tag ? `${data.tag}-${Date.now()}` : `teamspace-${Date.now()}`,
     vibrate: [300, 100, 300, 100, 300],
-    data: { url: data.url || '/' },
+    data: { 
+      url: data.url || '/',
+      timestamp: Date.now()
+    },
+    actions: [
+      { action: 'open', title: '👀 Open' }
+    ],
     renotify: true,
-    requireInteraction: true
+    requireInteraction: true,
+    silent: false
   };
 
   event.waitUntil(
@@ -54,13 +75,18 @@ self.addEventListener('push', (event) => {
 // Click notification to open or focus the app
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
   const targetUrl = event.notification.data?.url || '/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if (client.url && 'focus' in client) {
-          return client.focus();
+        if ('focus' in client && client.url && client.url.includes(self.location.origin)) {
+          client.focus();
+          if ('navigate' in client && targetUrl !== '/') {
+            client.navigate(targetUrl);
+          }
+          return;
         }
       }
       if (clients.openWindow) {
@@ -68,4 +94,8 @@ self.addEventListener('notificationclick', (event) => {
       }
     })
   );
+});
+
+self.addEventListener('notificationclose', (event) => {
+  // Clean up if needed
 });

@@ -11,6 +11,7 @@ import MyTeamsPage from './pages/MyTeamsPage';
 import CreateTeamPage from './pages/CreateTeamPage';
 import JoinTeamPage from './pages/JoinTeamPage';
 import TeamWorkspacePage from './pages/TeamWorkspacePage';
+import AIStudioPage from './pages/AIStudioPage';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -69,6 +70,7 @@ function App() {
           <Route path="auth/callback" element={<AuthCallbackPage />} />
           
           <Route path="workspace" element={<ProtectedRoute><MyTeamsPage /></ProtectedRoute>} />
+          <Route path="workspace/ai" element={<ProtectedRoute><AIStudioPage /></ProtectedRoute>} />
           <Route path="workspace/create" element={<ProtectedRoute><CreateTeamPage /></ProtectedRoute>} />
           <Route path="workspace/join" element={<ProtectedRoute><JoinTeamPage /></ProtectedRoute>} />
           <Route path="workspace/team/:teamId" element={<ProtectedRoute><TeamWorkspacePage /></ProtectedRoute>} />

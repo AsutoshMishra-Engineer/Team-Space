@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import AnnouncementAcknowledgement from './AnnouncementAcknowledgement';
+import { dispatchPushNotification, syncPushSubscriptionWithDatabase } from '../lib/pushService';
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
 
@@ -15,11 +17,13 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-export default function Announcements({ teamId, isLeader }) {
+export default function Announcements({ teamId, isLeader, members = [] }) {
   const { user, profile } = useAuth();
   const [announcements, setAnnouncements] = useState([]);
   const [message, setMessage] = useState('');
   const [deadline, setDeadline] = useState('');
+  const [isImportant, setIsImportant] = useState(false);
+  const [requiresAck, setRequiresAck] = useState(false);
   const [posting, setPosting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [extendingAnnId, setExtendingAnnId] = useState(null);
@@ -80,37 +84,9 @@ export default function Announcements({ teamId, isLeader }) {
 
   // Register Web Push subscription to Supabase database
   const subscribeToWebPush = async () => {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
-    if (!VAPID_PUBLIC_KEY || !user?.id || !teamId) return;
-
+    if (!user?.id || !teamId) return;
     try {
-      let registration = await navigator.serviceWorker.getRegistration();
-      if (!registration) {
-        registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
-      }
-      registration = await navigator.serviceWorker.ready;
-      if (!registration || !registration.pushManager) return;
-
-      let subscription = await registration.pushManager.getSubscription();
-
-      if (!subscription) {
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-        });
-      }
-
-      if (subscription) {
-        // Save token & subscription in Supabase database
-        await supabase
-          .from('user_push_subscriptions')
-          .upsert({
-            user_id: user.id,
-            team_id: teamId,
-            subscription: subscription.toJSON(),
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'user_id,team_id' });
-      }
+      await syncPushSubscriptionWithDatabase(user.id, teamId);
     } catch (err) {
       console.warn('Web Push subscription error:', err);
     }
@@ -415,7 +391,9 @@ export default function Announcements({ teamId, isLeader }) {
           team_id: teamId,
           posted_by: user.id,
           message: textToPost,
-          deadline: targetDeadline
+          deadline: targetDeadline,
+          is_important: isImportant,
+          requires_ack: requiresAck
         })
         .select('*, profiles!announcements_profiles_fkey(user_id, username)');
 
@@ -436,6 +414,8 @@ export default function Announcements({ teamId, isLeader }) {
 
       setMessage('');
       setDeadline('');
+      setIsImportant(false);
+      setRequiresAck(false);
       fetchAnnouncements();
 
       if (!newRecord) {
@@ -445,6 +425,8 @@ export default function Announcements({ teamId, isLeader }) {
           posted_by: user.id,
           message: textToPost,
           deadline: targetDeadline,
+          is_important: isImportant,
+          requires_ack: requiresAck,
           created_at: new Date().toISOString(),
           profiles: { user_id: profile?.user_id || 'Member', username: profile?.username }
         };
@@ -463,16 +445,16 @@ export default function Announcements({ teamId, isLeader }) {
         });
       }
 
-      // Background Mobile Push: Notify offline phones like WhatsApp via Supabase
+      // Background Mobile Push: Notify offline phones like WhatsApp via Google FCM & Cloudflare Worker
       try {
-        supabase.functions.invoke('send-push', {
-          body: {
-            team_id: teamId,
-            title: `📢 Team Announcement: ${profile?.username || profile?.user_id || 'Team Member'}`,
-            message: textToPost,
-            url: window.location.origin + '/#/workspace'
-          }
-        }).catch((err) => console.log('Push dispatch note:', err));
+        const notifPrefix = isImportant ? '⚠️ [IMPORTANT] ' : requiresAck ? '✍️ [ACK REQUIRED] ' : '📢 ';
+        dispatchPushNotification({
+          teamId,
+          title: `${notifPrefix}Announcement: ${profile?.username || profile?.user_id || 'Team Member'}`,
+          message: textToPost,
+          url: window.location.origin + '/#/workspace',
+          tag: 'team-announcement'
+        });
       } catch (e) {}
 
       triggerBrowserNotification({
@@ -764,6 +746,34 @@ export default function Announcements({ teamId, isLeader }) {
               </button>
             </div>
           </div>
+
+          {/* Acknowledgement and Priority Flags */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', margin: '4px 0' }}>
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: '#e2e8f0', cursor: 'pointer', userSelect: 'none' }}>
+              <input
+                type="checkbox"
+                checked={isImportant}
+                onChange={(e) => setIsImportant(e.target.checked)}
+                style={{ accentColor: '#f59e0b', width: '15px', height: '15px', cursor: 'pointer' }}
+              />
+              <span style={{ fontWeight: 600, color: isImportant ? '#fbbf24' : '#cbd5e1' }}>
+                ⚠️ Important
+              </span>
+            </label>
+
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: '#e2e8f0', cursor: 'pointer', userSelect: 'none' }}>
+              <input
+                type="checkbox"
+                checked={requiresAck}
+                onChange={(e) => setRequiresAck(e.target.checked)}
+                style={{ accentColor: '#6C63FF', width: '15px', height: '15px', cursor: 'pointer' }}
+              />
+              <span style={{ fontWeight: 600, color: requiresAck ? '#a78bfa' : '#cbd5e1' }}>
+                ✍️ Require Member Sign-off
+              </span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={posting || !message.trim() || !deadline}
@@ -849,6 +859,14 @@ export default function Announcements({ teamId, isLeader }) {
                     )}
                   </div>
                 </div>
+
+                {/* Announcement Acknowledgement & Sign-off Tracking */}
+                <AnnouncementAcknowledgement
+                  announcement={ann}
+                  isLeader={isLeader}
+                  teamId={teamId}
+                  allMembers={members}
+                />
 
                 {/* Inline Extend Deadline Drawer */}
                 {extendingAnnId === ann.id && (

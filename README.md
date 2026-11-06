@@ -1,323 +1,307 @@
-# 🚀 TeamSpace — Your Team's Modern Command Center
+# 🚀 TeamSpace — Enterprise Team Workspace & Operations Hub
 
 <div align="center">
 
 <img src="public/logo.png" alt="TeamSpace Logo" width="120" style="border-radius: 24px; box-shadow: 0 8px 32px rgba(108, 99, 255, 0.35);" />
 
-### *Everything your team needs to work together — Chat, Files, Deadlines, Tasks & AI in one place.*
+### *Enterprise-Grade Command Center for Engineering Teams, Student Cohorts & Agile Workgroups*
 
+[![Production Status](https://img.shields.io/badge/Production-Live%20on%20Cloudflare-success?style=for-the-badge&logo=cloudflare&logoColor=white)](https://teamspace204.asutoshm359.workers.dev)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Realtime-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-[![Cloudflare](https://img.shields.io/badge/Cloudflare-Workers%20Static-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
-[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media%20Cloud-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com/)
-[![Groq](https://img.shields.io/badge/Groq-AI%20Assistant-FF6F00?style=for-the-badge&logo=fastapi&logoColor=white)](https://groq.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![Security](https://img.shields.io/badge/Security-F--204%20IT%20CELL%20PROTECTED-red?style=for-the-badge)](#-security--privacy)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL%20%26%20RLS-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers%20Edge%20API-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+[![Groq LPU](https://img.shields.io/badge/Groq-LPU%20GPT--OSS--120B-FF6F00?style=for-the-badge&logo=fastapi&logoColor=white)](https://groq.com/)
+[![Web Push](https://img.shields.io/badge/Web%20Push-VAPID%20PWA-blue?style=for-the-badge&logo=pwa&logoColor=white)](#-android-web-push-notifications)
+[![Security](https://img.shields.io/badge/Security-F--204%20IT%20CELL%20PROTECTED-red?style=for-the-badge)](#-security--privacy-architecture)
 
-**[🌐 Click Here to Open Live Website](https://teamspace204.asutoshm359.workers.dev)** • **[Report an Issue](https://github.com/AsutoshMishra-Engineer/Team-Space/issues)** • **[Suggest a Feature](https://github.com/AsutoshMishra-Engineer/Team-Space/issues)**
+**[🌐 Live Production Website](https://teamspace204.asutoshm359.workers.dev)** • **[GitHub Repository](https://github.com/AsutoshMishra-Engineer/Team-Space)** • **[Report an Issue](https://github.com/AsutoshMishra-Engineer/Team-Space/issues)**
 
 </div>
 
 ---
 
-## 💡 What is TeamSpace in Simple Words?
+## 📖 Overview
 
-Imagine you and your friends or colleagues are working on a project together. Normally, you have to juggle between four different apps:
-- 📱 WhatsApp / Slack to chat
-- 📁 Google Drive to share files and preview them
-- 📝 Trello / Notes to track deadlines
-- 🤖 ChatGPT to get help writing code or answering questions
+**TeamSpace** is an all-in-one collaborative workspace engineered to streamline team execution. It consolidates team messaging, multi-format media repositories, compulsory-deadline announcements with mandatory sign-offs, a 6-state agile task management pipeline, leader-governed attendance and contribution auditing, and a dedicated Groq AI Work Studio into a single fast, responsive, and secure Progressive Web Application (PWA).
 
-**TeamSpace brings all of that into ONE fast, secure, and beautiful website.**
-
-You can create private team rooms, invite your teammates with a short code, chat in real time, upload and preview any file directly, set priority deadlines, and get instant AI help whenever you're stuck.
+Deployed globally on **Cloudflare Workers Edge Network**, backed by **Supabase PostgreSQL with strict Row Level Security (RLS)**, and accelerated by **Groq LPU reasoning models**.
 
 ---
 
-## 🎯 Who is TeamSpace For?
+## ✨ Enterprise Feature Highlights
 
-- 🎓 **Students & College Groups**: For hackathons, semester projects, and group assignments.
-- 💻 **Developers & Coding Teams**: Share code snippets, discuss bugs, and keep track of sprint tasks.
-- 🚀 **Startups & Clubs**: Coordinate events, broadcast announcements with deadlines, and manage files without paying for expensive tools.
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                             TEAMSPACE ECOSYSTEM                             │
+├──────────────────────┬──────────────────────┬───────────────────────────────┤
+│ 📢 Announcements     │ 📋 Smart Tasks       │ ⚡ Groq AI Work Studio         │
+│ • Mandatory Sign-Off │ • 6-State Lifecycle  │ • Full-Screen Single Page     │
+│ • Push Reminders     │ • DoD Checklists     │ • Zero-Token Work Guardrail   │
+│ • Leader Audit Table │ • Leader Review/Req  │ • Code & Schema Synthesis     │
+├──────────────────────┼──────────────────────┼───────────────────────────────┤
+│ 👥 Attendance & Work │ 🔔 Android Web Push  │ 📁 Rich Media Vault           │
+│ • Leader-Exclusive   │ • Multi-Device VAPID │ • In-Browser Media Previews   │
+│ • Verified Notes     │ • Auto Token Sync    │ • Cloudinary Storage          │
+│ • Monthly Analytics  │ • Heads-Up Vibration │ • Role-Based Access           │
+└──────────────────────┴──────────────────────┴───────────────────────────────┘
+```
+
+### 1. 🔔 Reliable Android Push Notifications (Web Push API)
+* **Standards-Based Web Push:** Built on the W3C Push API and Service Workers (`public/sw.js`), delivering notifications even when the browser or PWA is closed.
+* **Auto-Subscription Background Sync:** User devices automatically register and synchronize ECDH P-256 VAPID subscriptions in the database upon authentication.
+* **Edge Notification Dispatcher:** Cloudflare Worker backend API (`/api/send-push`) formats high-priority payloads with custom vibration sequences, badge icons, and announcement deep-linking.
+* **Multi-Device Support:** Tracks multiple devices per user with automatic stale-token pruning.
+* **Notification Preferences:** Fine-grained member toggles for Announcements, Tasks, Deadline Reminders, and Meeting Alerts.
+
+### 2. 📢 Announcement Acknowledgement & Sign-Off System
+* **Compulsory Deadlines & Priorities:** Every announcement requires an actionable deadline with options for *Normal*, *Important*, or *Mandatory Acknowledgement*.
+* **Member Sign-Off Interface:** Clear, prominent acknowledgment button recording exact timestamps and member IDs to prevent dispute.
+* **Leader Audit Dashboard:** Real-time sign-off progress bars, member-wise status tables (*Acknowledged* vs *Pending* with timestamps), and a 1-click **"Send Push Reminder to Pending Members"** action.
+
+### 3. 📋 Smart Task Management System (6-State Agile Pipeline)
+* **6-State Engineering Workflow:**
+  $$\text{Assigned} \longrightarrow \text{Accepted} \longrightarrow \text{In Progress} \longrightarrow \text{Review Pending} \longrightarrow \begin{cases} \text{Completed} \\ \text{Changes Requested} \end{cases}$$
+* **Definition of Done (DoD):** Interactive checklist items required before work can be submitted for review.
+* **Submission & Review Cycle:** Members submit deliverable notes and repository/preview links; team leaders review, approve, or reject with actionable feedback.
+* **Priority & Deadline Alerts:** Automated visual cues for Overdue, Critical, and Approaching milestones.
+
+### 4. 👥 Leader-Exclusive Attendance & Contribution Tracking
+* **Strict Role Enforcement:** Exclusively team leaders can log, verify, or modify daily attendance records.
+* **Operational Statuses:** `Present`, `Absent`, `Half Day`, `Remote`.
+* **Contribution & Task Notes:** Leaders log daily deliverables and tag records as `Verified`.
+* **Audit Trail & Analytics:** Automatic logging of who marked and modified attendance, accompanied by monthly attendance percentage summaries and date filters.
+
+### 5. ⚡ Dedicated Groq AI Work Studio (`/workspace/ai`)
+* **Single-Page Viewport Layout:** Matches modern conversational AI tools (like ChatGPT and Gemini) with `100vh` zero outer-scroll design, smooth internal message stream scrolling, and a pinned bottom input console.
+* **LPU Hardware Speed:** Powered by `openai/gpt-oss-120b` running on Groq LPU hardware with automatic fallback to `qwen/qwen3.8-27b` and `openai/gpt-oss-20b`.
+* **Zero-Token Client Guardrail:** Intercepts casual, personal, or entertainment queries client-side before touching the network, preserving 100% of API tokens and returning an instant workplace refocus reminder.
+* **Enterprise Work Culture:** Trained specifically for code refactoring, PostgreSQL RLS schema generation, 6-state task breakdowns, incident postmortems, and executive team communications.
+* **Export & Tools:** 1-click Markdown (`.md`) export, session reset, and copyable syntax-highlighted code blocks.
+
+### 6. 🌐 Dashboard Web Search
+* Dedicated Google Search bar integrated directly into the Dashboard (`/workspace`) for external web research, technical documentation lookup, and public browsing.
 
 ---
 
-## 📑 Table of Contents
-- [💡 What is TeamSpace?](#-what-is-teamspace-in-simple-words)
-- [✨ Key Features (Explained Simply)](#-key-features-explained-simply)
-- [📊 Visual Flowcharts (How It Works)](#-visual-flowcharts-how-it-works)
-  - [1. The Big Picture: How TeamSpace Connects](#1-the-big-picture-how-teamspace-connects)
-  - [2. How Users Join a Team](#2-how-users-join-a-team)
-  - [3. How Team Announcements & Alerts Work](#3-how-team-announcements--alerts-work)
-  - [4. The 5-Task Focus Rule (Anti-Procrastination)](#4-the-5-task-focus-rule-anti-procrastination)
-- [📱 How to Use TeamSpace (Step-by-Step)](#-how-to-use-teamspace-step-by-step)
-- [💻 Technology Behind TeamSpace](#-technology-behind-teamspace)
-- [📂 Project Folder Structure](#-project-folder-structure)
-- [🛠️ How to Run Locally on Your Computer](#️-how-to-run-locally-on-your-computer)
-- [🌐 How to Deploy to Cloudflare](#-how-to-deploy-to-cloudflare)
-- [🛡️ Security & Privacy](#️-security--privacy)
-- [👨‍💻 Author & Project Info](#-author--project-info)
+## 🛠️ Technology Stack
 
----
-
-## ✨ Key Features (Explained Simply)
-
-| Feature | What It Does | Why It's Useful |
+| Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **👥 Private Teams & Custom Roles** | Every user gets a unique 7-character User ID (like `471TF99`). Leaders can invite members and assign roles (e.g., *Frontend Lead*, *UI Designer*). | No strangers can enter your team. Everyone knows who is doing what. |
-| **📢 Announcements with Deadlines** | Anyone on the team can post an announcement, but picking a **deadline is compulsory**. Need more time? Just tap **⏳ Extend**. | Nobody forgets when a project milestone is due. |
-| **💬 Real-Time Team Chat** | Instant messaging with delivery checks (`✓✓`), timestamps, sender avatars, and a 1-click chat clear option. | Talk with your team in real time without refreshing the page. |
-| **📁 WhatsApp-Style File Previews** | Upload images, videos, audio clips, code, and PDFs. Preview them directly on the website or download straight to your phone/PC. | No need to download heavy files just to see what’s inside them. |
-| **📝 5-Task Priority Tracker** | A private to-do list that lets you set up to **5 priority tasks**. If you try to add a 6th, it reminds you: *"Finish these 5 first!"* | Keeps you 100% focused on your top priorities instead of getting overwhelmed. |
-| **🤖 Built-in AI Assistant** | A slide-out AI copilot powered by Groq. Ask it to write code, fix errors, or summarize project ideas with 1-click code copying. | Instant answers without leaving your project workspace. |
-| **🔔 Mobile & Desktop Alerts** | Works as a Progressive Web App (PWA). Sends push alerts to Android phones and desktops when team announcements are made. | You never miss an urgent update, even if your phone screen is off. |
-| **🎨 7 Custom Dark Themes** | Pick from Dark, Navy, Forest, Wine, Midnight, Charcoal, or Coffee, plus custom accent colors and a private motivational quote. | Personalize your workspace to match your style. |
+| **Frontend Framework** | React 18.3 + Vite 6.4 | Modern, fast component architecture and bundling |
+| **Edge Compute & Host**| Cloudflare Workers + Static Assets | Global serverless edge routing, push dispatch & static hosting |
+| **Database & Auth** | Supabase (PostgreSQL 15) | Relational database, Auth, RPC functions & Row Level Security |
+| **Realtime Engine** | Supabase Realtime | WebSocket channels for live team chat and status broadcasts |
+| **Media Cloud** | Cloudinary | Encrypted upload, storage, and in-browser preview of files |
+| **AI Intelligence** | Groq API (LPU Inference Engine) | High-speed LLM reasoning for engineering and code workflows |
+| **Push Protocol** | Web Push API + VAPID (RFC 8291/8292) | Background Android and desktop push notification delivery |
+| **Security Architecture**| F-204 IT Cell Protocol + RLS | Least-privilege data isolation and strict input sanitization |
 
 ---
 
-## 📊 Visual Flowcharts (How It Works)
+## 📂 Project Structure
 
-### 1. The Big Picture: How TeamSpace Connects
-
-Here is how all the pieces of TeamSpace communicate smoothly together:
-
-```mermaid
-flowchart TD
-    User["👤 You & Your Teammates (Phone / PC)"]
-    Website["🌐 TeamSpace Web App (Fast & Responsive)"]
-    
-    subgraph Services["⚡ Powerful Free Cloud Services"]
-        DB["🗄️ Supabase Database (Stores Users, Teams, Chat & Tasks)"]
-        Media["☁️ Cloudinary (Stores Photos, Videos & Documents)"]
-        AI["🤖 Groq AI (Super-fast AI answers & Code helper)"]
-        Alerts["🔔 Web Push Notifications (Alerts your phone like WhatsApp)"]
-    end
-
-    User <-->|Opens site & interacts| Website
-    Website <-->|Saves messages & teams in real time| DB
-    Website <-->|Uploads & previews files| Media
-    Website <-->|Asks questions & debugs code| AI
-    DB -->|Sends instant notification| Alerts
-    Alerts -->|Pings your phone screen| User
 ```
-
----
-
-### 2. How Users Join a Team
-
-Joining a team is safe, private, and invite-only:
-
-```mermaid
-flowchart LR
-    A["1️⃣ Sign Up with Email"] --> B["2️⃣ Get Unique User ID (e.g. 471TF99)"]
-    B --> C["3️⃣ Leader creates team & invites your User ID"]
-    C --> D["4️⃣ Leader gives you the 5-letter Team Code (e.g. 276ZV)"]
-    D --> E["5️⃣ Enter Team Code"]
-    E --> F["🎉 You're in! Access Chat, Files & Announcements"]
-```
-
----
-
-### 3. How Team Announcements & Alerts Work
-
-Deadlines are compulsory so that work actually gets finished on time:
-
-```mermaid
-flowchart TD
-    Start["Teammate writes an Announcement"] --> CheckDeadline{"Did you select a Deadline date?"}
-    
-    CheckDeadline -- "❌ No" --> AlertUser["⚠️ Form reminds you: Deadline is Compulsory!"]
-    AlertUser --> PickDate["Select Date or tap quick presets (Today / Tomorrow / +2 Days)"]
-    PickDate --> Submit["📢 Post Announcement"]
-    
-    CheckDeadline -- "✅ Yes" --> Submit
-    
-    Submit --> Broadcast["⚡ Broadcasts to all teammates in real-time"]
-    Broadcast --> Sound["🔔 Plays notification sound chime"]
-    Broadcast --> Mobile["📱 Shows instant alert on Android phone system tray"]
-    Broadcast --> Extend["⏳ Teammates or Leader can tap 'Extend' to adjust date later"]
-```
-
----
-
-### 4. The 5-Task Focus Rule (Anti-Procrastination)
-
-To stop you from making giant, impossible to-do lists, TeamSpace limits your active priority tasks to **5**:
-
-```mermaid
-flowchart TD
-    NewTask["Add a Priority Task + Deadline"] --> Count{"How many active tasks do you have?"}
-    
-    Count -- "Less than 5" --> Added["✅ Task added to your private list!"]
-    
-    Count -- "Already have 5" --> Blocked["🎯 Priority Limit Reached!"]
-    Blocked --> Message["'Firstly finish these 5 priority tasks, after that do other or set other!'"]
-    
-    Message --> Action{"What do you do next?"}
-    Action -- "Complete a task (✓)" --> SlotFree["🔓 Slot unlocked! You can add your next task."]
-    Action -- "Delete a task (🗑️)" --> SlotFree
-    Action -- "Need more time?" --> ExtendTask["⏳ Tap 'Extend' to pick a new deadline date"]
-```
-
----
-
-## 📱 How to Use TeamSpace (Step-by-Step)
-
-### Step 1: Create Your Account
-1. Open the [TeamSpace Website](https://teamspace204.asutoshm359.workers.dev).
-2. Click **Get Started Free** and enter your email and password.
-3. Check your email inbox and click the verification link.
-4. You will receive your **unique User ID** (e.g. `471TF99`) in the top navigation bar.
-
-### Step 2: Create or Join a Team
-- **To Create a Team**: Click **+ Create a Team**, enter your team name and project idea. You'll receive a **Team Access Code** (e.g. `276ZV`) to share with your friends.
-- **To Join a Team**: Ask your team leader to invite your User ID. Then click **Join a Team**, enter the Team Code, and click Enter!
-
-### Step 3: Work Together
-- **Chat**: Send real-time messages with your team in the chat room.
-- **Announcements**: Post important notices and set a compulsory due date.
-- **Files**: Drag and drop any image, document, video, or code file to preview and share it.
-- **Priority Tasks**: Keep yourself accountable with your personal 5-task focus list.
-- **AI Help**: Click the floating AI robot button on the side anytime you need code help or advice!
-
----
-
-## 💻 Technology Behind TeamSpace
-
-We chose simple, robust, and modern technologies so the app is fast, lightweight, and completely free to host:
-
-- **Frontend Interface**: Built with **React 18** and **Vite** for instant page loads.
-- **Styling**: Clean, custom CSS with glassmorphic cards and 7 dark-mode themes.
-- **Database & Realtime**: **Supabase (PostgreSQL)** securely stores user accounts, teams, messages, and tasks.
-- **File Storage**: **Cloudinary** handles fast uploads, photo/video hosting, and inline previews.
-- **AI Copilot**: **Groq Cloud** powers the instant AI assistant with high-speed language models.
-- **Push Notifications**: **Service Worker (`sw.js`)** runs in the background to show alerts on your phone screen.
-- **Global Hosting**: **Cloudflare Workers** serves the site from over 300 cities worldwide with 100% uptime.
-
----
-
-## 📂 Project Folder Structure
-
-For developers looking at the code, here is where everything lives:
-
-```plaintext
 Team-Space/
-├── public/                 # Static assets (Logo, PWA manifest, Service Worker)
-│   ├── logo.png            # App logo & icon
-│   ├── manifest.json       # PWA config (makes app installable on Android/iOS)
-│   └── sw.js               # Background service worker for mobile notifications
+├── public/
+│   ├── logo.png               # Official brand identity & app icon
+│   ├── manifest.json          # PWA configuration manifest
+│   └── sw.js                  # Service Worker (Web Push & notification click handler)
 ├── src/
-│   ├── components/         # Reusable building blocks of the website
-│   │   ├── Announcements.jsx   # Team announcement board with compulsory deadlines
-│   │   ├── DeepSeekChat.jsx    # Slide-out Groq AI assistant sidebar
-│   │   ├── Layout.jsx          # Header navigation bar & F-204 security footer
-│   │   ├── ManageMembers.jsx   # Leader member invite & custom role editor
-│   │   ├── PersonalSettings.jsx# 7 background theme colors & quote customization
-│   │   ├── PersonalTodos.jsx   # 5-task priority queue with deadline enforcement
-│   │   ├── SharedFiles.jsx     # File upload, inline previews (video/audio/code) & download
-│   │   ├── TeamChat.jsx        # WhatsApp-style real-time chat box
-│   │   └── TeamInfoBar.jsx     # Team name, access code badge & member chips
+│   ├── components/
+│   │   ├── AnnouncementAcknowledgement.jsx # Leader audit table & member sign-off
+│   │   ├── Announcements.jsx               # Announcements feed & deadline extenders
+│   │   ├── GoogleSearchBar.jsx             # Clean Google search bar for dashboard
+│   │   ├── Layout.jsx                      # App shell, navbar & auto-push token sync
+│   │   ├── ManageMembers.jsx               # Leader member management & roles
+│   │   ├── NetworkStatus.jsx               # Offline/online indicator banner
+│   │   ├── NotificationPreferences.jsx     # Push category toggles
+│   │   ├── PersonalSettings.jsx            # Dark themes & user profile settings
+│   │   ├── PersonalTodos.jsx               # 5-task priority focus tracker
+│   │   ├── ProtectedRoute.jsx              # Auth guard for workspace routes
+│   │   ├── SharedFiles.jsx                 # Multi-format media vault with previews
+│   │   ├── SmartTasks.jsx                  # 6-state agile task management pipeline
+│   │   ├── TeamChat.jsx                    # Real-time WebSocket messaging
+│   │   ├── TeamInfoBar.jsx                 # Team code, member counts & quick actions
+│   │   └── WorkAttendance.jsx              # Leader-exclusive attendance tracking
 │   ├── context/
-│   │   └── AuthContext.jsx     # Manages login session and active theme colors
+│   │   └── AuthContext.jsx                 # Supabase session & user profile state
 │   ├── lib/
-│   │   └── supabase.js         # Connects the frontend to Supabase database
-│   ├── pages/              # Main screens of the application
-│   │   ├── LandingPage.jsx     # Welcome page with demo badge
-│   │   ├── LoginPage.jsx       # User ID & password login
-│   │   ├── RegisterPage.jsx    # New account signup
-│   │   ├── MyTeamsPage.jsx     # Dashboard showing all your active teams
-│   │   └── TeamWorkspacePage.jsx# The main team collaboration room
-│   ├── App.jsx             # Main router & crash protection Error Boundary
-│   ├── index.css           # Complete styling & responsive layout
-│   └── main.jsx            # Entry point of the React app
-├── supabase/               # SQL database tables, triggers & security scripts
-├── .env.example            # Sample environment variables file
-├── package.json            # Node.js project configuration
-└── vite.config.js          # Vite build tool configuration
+│   │   ├── groqService.js                  # Groq API client, model fallback & work guardrail
+│   │   ├── pushService.js                  # VAPID registration, token sync & permissions
+│   │   └── supabase.js                     # Supabase client initialization
+│   ├── pages/
+│   │   ├── AIStudioPage.jsx                # Dedicated full-screen Groq AI workspace
+│   │   ├── AuthCallbackPage.jsx            # OAuth and magic link callback handler
+│   │   ├── CreateTeamPage.jsx              # Team generation flow
+│   │   ├── JoinTeamPage.jsx                # 7-character invite code entry
+│   │   ├── LandingPage.jsx                 # Product showcase & feature highlights
+│   │   ├── LoginPage.jsx                   # User authentication & ID recovery
+│   │   ├── MyTeamsPage.jsx                 # Main user dashboard with Google search
+│   │   ├── RegisterPage.jsx                # Account creation
+│   │   └── TeamWorkspacePage.jsx           # Main team collaboration command center
+│   ├── worker-shim.js                      # Cloudflare Worker edge API router & push endpoint
+│   ├── App.jsx                             # Router & global error boundary
+│   ├── index.css                           # Unified CSS architecture (7 themes + responsive)
+│   └── main.jsx                            # React entry point
+├── supabase/                               # Database migrations & RLS policies
+│   ├── add-acknowledgements.sql            # Schema for announcement acknowledgements
+│   ├── add-smart-tasks.sql                 # Schema for 6-state tasks & DoD
+│   ├── add-work-attendance.sql             # Schema for leader-exclusive attendance
+│   ├── update-push-subscriptions.sql       # Schema for Web Push tokens
+│   └── production-upgrade-complete.sql     # Consolidated idempotent database migration
+├── wrangler.jsonc                          # Cloudflare Workers deployment config
+├── vite.config.js                          # Vite build pipeline
+└── package.json                            # Dependencies & scripts
 ```
 
 ---
 
-## 🛠️ How to Run Locally on Your Computer
+## 🗄️ Database Schema & Security (Supabase PostgreSQL)
 
-If you want to run this website on your own machine:
+TeamSpace enforces strict **Row Level Security (RLS)** across all tables. Unauthenticated access is blocked, and members can only access teams they belong to.
 
-### 1. Make sure you have Node.js installed
-Download and install [Node.js](https://nodejs.org/) (version 18 or newer).
+```mermaid
+erDiagram
+    USERS ||--o{ TEAM_MEMBERS : "belongs to"
+    TEAMS ||--o{ TEAM_MEMBERS : "has"
+    TEAMS ||--o{ ANNOUNCEMENTS : "publishes"
+    ANNOUNCEMENTS ||--o{ ANNOUNCEMENT_ACKS : "tracked by"
+    TEAMS ||--o{ SMART_TASKS : "manages"
+    TEAMS ||--o{ WORK_ATTENDANCE : "audits"
+    USERS ||--o{ PUSH_SUBSCRIPTIONS : "registers"
+    TEAMS ||--o{ MESSAGES : "contains"
+    TEAMS ||--o{ SHARED_FILES : "stores"
 
-### 2. Download this project
+    USERS {
+        uuid id PK
+        string email
+        string username
+        string user_id "Unique 7-char public ID"
+        string avatar_url
+    }
+    TEAMS {
+        uuid id PK
+        string name
+        string join_code "Unique 7-char invite code"
+        uuid created_by FK
+    }
+    ANNOUNCEMENTS {
+        uuid id PK
+        uuid team_id FK
+        string title
+        text content
+        timestamp deadline
+        boolean acknowledgement_required
+    }
+    ANNOUNCEMENT_ACKS {
+        uuid id PK
+        uuid announcement_id FK
+        uuid user_id FK
+        timestamp acknowledged_at
+    }
+    SMART_TASKS {
+        uuid id PK
+        uuid team_id FK
+        string title
+        string status "Assigned|Accepted|In Progress|Review Pending|Completed|Changes Requested"
+        string priority "Low|Medium|High|Critical"
+        jsonb dod_checklist
+        uuid assigned_to FK
+    }
+    WORK_ATTENDANCE {
+        uuid id PK
+        uuid team_id FK
+        uuid user_id FK
+        date date
+        string status "Present|Absent|Half Day|Remote"
+        text contribution_notes
+        boolean is_verified
+        uuid verified_by FK
+    }
+    PUSH_SUBSCRIPTIONS {
+        uuid id PK
+        uuid user_id FK
+        string endpoint
+        string p256dh
+        string auth
+        timestamp last_seen_at
+    }
+```
+
+---
+
+## 🚀 Local Development Setup
+
+### Prerequisites
+- Node.js 18+ installed
+- Supabase project with database migrations applied
+- Cloudinary account for file storage
+- Groq Cloud API key for the AI engine
+
+### 1. Clone & Install
 ```bash
 git clone https://github.com/AsutoshMishra-Engineer/Team-Space.git
 cd Team-Space
-```
-
-### 3. Install the packages
-```bash
 npm install
 ```
 
-### 4. Set up your `.env` file
-Copy `.env.example` to a new file named `.env` and fill in your free Supabase, Cloudinary, and Groq API keys:
+### 2. Configure Environment Variables
+Create a `.env` file in the root directory:
 ```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_URL=https://your-supabase-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 VITE_CLOUDINARY_CLOUD_NAME=your-cloudinary-name
-VITE_CLOUDINARY_UPLOAD_PRESET=your-preset
-VITE_GROQ_API_KEY=gsk_your-groq-key
+VITE_CLOUDINARY_UPLOAD_PRESET=your-upload-preset
+VITE_GROQ_API_KEY=your-groq-api-key
+VITE_VAPID_PUBLIC_KEY=your-vapid-public-key
+VAPID_PRIVATE_KEY=your-vapid-private-key
+VAPID_SUBJECT=mailto:admin@teamspace.com
 ```
 
-### 5. Start the website
+### 3. Run Database Migrations
+Execute [`supabase/production-upgrade-complete.sql`](supabase/production-upgrade-complete.sql) in your Supabase SQL Editor.
+
+### 4. Start Development Server
 ```bash
 npm run dev
 ```
-Open **`http://localhost:5173`** in your browser. You can now test and edit the site locally!
+Open `http://localhost:5173` in your browser.
 
 ---
 
-## 🌐 How to Deploy to Cloudflare
+## 🌐 Production Deployment (Cloudflare Workers)
 
-Deploying takes less than 60 seconds with **zero command line tools needed**:
+TeamSpace builds as a static asset bundle paired with an edge Worker router for server-side push execution.
 
-1. Run the build command to generate the final website files:
-   ```bash
-   npm run build
-   ```
-2. This creates a clean **`dist/`** folder containing your compiled website.
-3. Open your [Cloudflare Dashboard](https://dash.cloudflare.com/) -> **Workers & Pages**.
-4. Click on your Worker -> **Upload Static Assets**.
-5. Drag and drop the **`dist`** folder into Cloudflare.
-6. Click **Deploy**. Your website is immediately updated and live across the world!
+```bash
+# 1. Build optimized production bundle
+npm run build
 
----
-
-## 🛡️ Security & Privacy
-
-```
-================================================================================
-                    [ F-204 IT CELL PROTECTED ]
-           Enterprise Identity & Workspace Guard Protocol
-================================================================================
+# 2. Deploy directly to Cloudflare edge network
+npx wrangler deploy
 ```
 
-We take your team's privacy very seriously:
-- **Private Data Isolation**: Your personal to-do tasks and thoughts can **never** be seen by teammates or even the team leader.
-- **Row Level Security (RLS)**: The database mathematically prevents anyone outside your team from viewing your messages or files.
-- **Safe Keys**: Private database administrator keys are never included in the website code.
-- **Protected Environment**: Your secret configuration files (`.env`) are strictly ignored by Git so passwords never leak.
+---
+
+## 🛡️ Security & Privacy Architecture
+
+* **F-204 IT Cell Protected:** Zero-trust architecture where all client actions are validated server-side.
+* **Row Level Security (RLS):** Every query executed against Supabase verifies authenticated identity against `team_members`.
+* **Zero Secret Leakage:** Privileged credentials (VAPID private keys, Supabase service roles) are strictly isolated from client-side bundles.
+* **Zero-Token Guardrail:** Client-side regex protection rejects personal/casual queries before hitting external AI APIs, eliminating unnecessary token consumption.
+* **DDoS & Bot Mitigation:** Fronted by Cloudflare's global edge network with automatic TLS encryption and bot protection.
 
 ---
 
-## 👨‍💻 Author & Project Info
+## 👨‍💻 Author & Acknowledgements
 
-**Designed & Developed with ❤️ by:**  
-### **Asutosh Mishra**  
-- 🐙 **GitHub Profile**: [@AsutoshMishra-Engineer](https://github.com/AsutoshMishra-Engineer)  
-- 📂 **Project Source Code**: [github.com/AsutoshMishra-Engineer/Team-Space](https://github.com/AsutoshMishra-Engineer/Team-Space)  
-- 🌐 **Live Website**: [teamspace204.asutoshm359.workers.dev](https://teamspace204.asutoshm359.workers.dev)
+* **Lead Architect & Developer:** Asutosh Mishra ([@AsutoshMishra-Engineer](https://github.com/AsutoshMishra-Engineer))
+* **Platform:** TeamSpace Collaborative Systems
+* **License:** [MIT License](LICENSE)
 
 ---
 
 <div align="center">
-  <sub>Released under the <strong>MIT License</strong>. Free for students, developers, and teams everywhere.</sub>
+  <sub>Protected under F-204 IT CELL Protocol • Built for Teams Who Build Things That Matter</sub>
 </div>

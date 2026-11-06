@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import PersonalSettings from '../components/PersonalSettings';
 import PersonalTodos from '../components/PersonalTodos';
-import DeepSeekChat from '../components/DeepSeekChat';
+import GoogleSearchBar from '../components/GoogleSearchBar';
 import { PageLoader } from '../components/Spinner';
 
 export default function MyTeamsPage() {
@@ -39,6 +39,11 @@ export default function MyTeamsPage() {
 
   return (
     <div>
+      {/* Google Web Search Bar */}
+      <div className="dashboard-search-container">
+        <GoogleSearchBar />
+      </div>
+
       {/* Personal Quote */}
       {profile?.personal_quote && (
         <div className="personal-quote">
@@ -46,9 +51,6 @@ export default function MyTeamsPage() {
           <em>"{profile.personal_quote}"</em>
         </div>
       )}
-
-      {/* DeepSeek AI Chat — floating button, no history stored */}
-      <DeepSeekChat />
 
       <div className="teams-header">
         <h1>My Teams</h1>

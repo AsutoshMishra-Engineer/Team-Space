@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NetworkStatus from './NetworkStatus';
+import { syncPushSubscriptionWithDatabase } from '../lib/pushService';
 
 export const Layout = ({ children }) => {
   const { user, profile, signOut } = useAuth();
+
+  // Automatically keep mobile push token synced in background whenever user is authenticated
+  useEffect(() => {
+    if (user?.id && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      syncPushSubscriptionWithDatabase(user.id);
+    }
+  }, [user?.id]);
 
   const initials = profile?.username
     ? profile.username.slice(0, 2).toUpperCase()
@@ -27,6 +35,7 @@ export const Layout = ({ children }) => {
             <div className="navbar-user">
               <div className="navbar-user-id">ID: {profile?.user_id}</div>
               <Link to="/workspace" className="btn btn-ghost btn-small">Dashboard</Link>
+              <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="Groq AI Work Studio">⚡ AI Studio</Link>
               <div className="navbar-avatar" title={profile?.username || 'Profile'}>
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="avatar" className="nav-avatar-img" />
