@@ -179,7 +179,7 @@ export default function NotificationPreferences() {
       setStatusMessage({
         type: 'success',
         title: '✅ Native Android Notifications Active!',
-        body: 'Your device is linked to Google Firebase Cloud Messaging for instant heads-up alerts.'
+        body: 'Your device is linked to TeamSpace High-Priority Push Gateway for instant heads-up alerts.'
       });
       return;
     }
@@ -225,13 +225,13 @@ export default function NotificationPreferences() {
         setTesting(true);
         await dispatchPushNotification({
           userId: user?.id,
-          title: '📢 TeamSpace Native Android Test',
-          message: '🚀 Real-time Google Firebase notification delivered directly to your Android device!'
+          title: '📢 TeamSpace Native Push Test',
+          message: '🚀 Real-time push notification delivered directly to your Android device!'
         });
         setStatusMessage({
           type: 'success',
           title: '🔔 Native Alert Dispatched!',
-          body: 'Google Firebase has sent a high-priority heads-up alert to your phone! Swipe down to view it.'
+          body: 'TeamSpace push service has sent a high-priority heads-up alert to your phone! Swipe down to view it.'
         });
       } catch (err) {
         setStatusMessage({

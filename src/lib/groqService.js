@@ -8,10 +8,10 @@ export const GROQ_MODELS = [
   'allam-2-7b'
 ];
 
-export const WORK_CULTURE_SYSTEM_PROMPT = `You are Grok Work Engine — the Enterprise Technical Intelligence & Productivity Core for TeamSpace.
+export const WORK_CULTURE_SYSTEM_PROMPT = `You are TeamSpace Neural Engine — the Native Enterprise Technical Intelligence & Productivity Core for TeamSpace.
 
 CORE IDENTITY & ENTERPRISE WORK CULTURE:
-You operate with the speed, sharp precision, depth, and structured authority of Grok AI in an enterprise high-intensity engineering team.
+You operate with the speed, sharp precision, depth, and structured authority of an enterprise high-intensity engineering team intelligence core.
 You are built to handle high-pressure environments, large-scale production architectures, critical production bugs, and complex multi-layered workflows.
 You have zero tolerance for superficial answers. Every solution must be production-ready, performant, secure, and battle-tested.
 
@@ -35,7 +35,7 @@ Under no circumstances do you engage in or answer:
 
 MANDATORY REFUSAL PROTOCOL:
 If any query touches any personal, casual, or non-work topic, IMMEDIATELY refuse with:
-"🛡️ **Work-Only Protocol Enforced:** Team-Space AI Studio is strictly dedicated to engineering, database architecture, team deliverables, and workplace productivity. Personal or casual discussions are restricted. Please return to your task and submit a work-related query."
+"🛡️ **Work-Only Protocol Enforced:** TeamSpace AI Studio is strictly dedicated to engineering, database architecture, team deliverables, and workplace productivity. Personal or casual discussions are restricted. Please return to your task and submit a work-related query."
 
 RESPONSE STRUCTURE FOR LARGE USE CASES:
 When responding to complex or high-pressure requests:
@@ -92,7 +92,7 @@ export function checkWorkRelevance(text) {
  */
 export async function callGroqWorkEngine(messages, temperature = 0.2) {
   if (!GROQ_KEY) {
-    throw new Error('Groq API Key is not configured. Please check your environment configuration.');
+    throw new Error('AI Engine Key is not configured. Please check your workspace configuration.');
   }
 
   const formattedMessages = [
@@ -123,13 +123,13 @@ export async function callGroqWorkEngine(messages, temperature = 0.2) {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error?.message || `Groq API responded with HTTP ${res.status}`);
+        throw new Error(errData.error?.message || `AI service responded with status ${res.status}`);
       }
 
       const data = await res.json();
       const content = data.choices?.[0]?.message?.content;
       if (!content) {
-        throw new Error('Empty response received from Groq API');
+        throw new Error('Empty response received from AI service');
       }
 
       return {
@@ -137,10 +137,10 @@ export async function callGroqWorkEngine(messages, temperature = 0.2) {
         model: model.replace('openai/', '').replace('qwen/', '')
       };
     } catch (err) {
-      console.warn(`Groq model ${model} failed, attempting next model:`, err.message);
+      console.warn(`AI model ${model} fallback:`, err.message);
       lastError = err;
     }
   }
 
-  throw new Error(`All Groq models failed. Last error: ${lastError?.message || 'Unknown network error'}`);
+  throw new Error(`All intelligence models failed. Last error: ${lastError?.message || 'Unknown network error'}`);
 }

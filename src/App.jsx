@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { PageLoader } from './components/Spinner';
 
-import LandingPage from './pages/LandingPage';
-import RegisterPage from './pages/RegisterPage';
-import LoginPage from './pages/LoginPage';
-import AuthCallbackPage from './pages/AuthCallbackPage';
-import MyTeamsPage from './pages/MyTeamsPage';
-import CreateTeamPage from './pages/CreateTeamPage';
-import JoinTeamPage from './pages/JoinTeamPage';
-import TeamWorkspacePage from './pages/TeamWorkspacePage';
-import AIStudioPage from './pages/AIStudioPage';
+// Route-level code splitting for lightning-fast mobile & web performance
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage'));
+const MyTeamsPage = lazy(() => import('./pages/MyTeamsPage'));
+const CreateTeamPage = lazy(() => import('./pages/CreateTeamPage'));
+const JoinTeamPage = lazy(() => import('./pages/JoinTeamPage'));
+const TeamWorkspacePage = lazy(() => import('./pages/TeamWorkspacePage'));
+const AIStudioPage = lazy(() => import('./pages/AIStudioPage'));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -74,20 +76,22 @@ class ErrorBoundary extends React.Component {
 function App() {
   return (
     <ErrorBoundary>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<LandingPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="auth/callback" element={<AuthCallbackPage />} />
-          
-          <Route path="workspace" element={<ProtectedRoute><MyTeamsPage /></ProtectedRoute>} />
-          <Route path="workspace/ai" element={<ProtectedRoute><AIStudioPage /></ProtectedRoute>} />
-          <Route path="workspace/create" element={<ProtectedRoute><CreateTeamPage /></ProtectedRoute>} />
-          <Route path="workspace/join" element={<ProtectedRoute><JoinTeamPage /></ProtectedRoute>} />
-          <Route path="workspace/team/:teamId" element={<ProtectedRoute><TeamWorkspacePage /></ProtectedRoute>} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<PageLoader text="Loading TeamSpace..." />}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<LandingPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="auth/callback" element={<AuthCallbackPage />} />
+            
+            <Route path="workspace" element={<ProtectedRoute><MyTeamsPage /></ProtectedRoute>} />
+            <Route path="workspace/ai" element={<ProtectedRoute><AIStudioPage /></ProtectedRoute>} />
+            <Route path="workspace/create" element={<ProtectedRoute><CreateTeamPage /></ProtectedRoute>} />
+            <Route path="workspace/join" element={<ProtectedRoute><JoinTeamPage /></ProtectedRoute>} />
+            <Route path="workspace/team/:teamId" element={<ProtectedRoute><TeamWorkspacePage /></ProtectedRoute>} />
+          </Route>
+        </Routes>
+      </Suspense>
     </ErrorBoundary>
   );
 }

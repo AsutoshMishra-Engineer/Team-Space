@@ -39,7 +39,7 @@ export const Layout = ({ children }) => {
             <div className="navbar-user">
               <div className="navbar-user-id">ID: {profile?.user_id}</div>
               <Link to="/workspace" className="btn btn-ghost btn-small">Dashboard</Link>
-              <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="Groq AI Work Studio">⚡ AI Studio</Link>
+              <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="TeamSpace AI Studio">⚡ AI Studio</Link>
               <div className="navbar-avatar" title={profile?.username || 'Profile'}>
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="avatar" className="nav-avatar-img" />
@@ -64,7 +64,8 @@ export const Layout = ({ children }) => {
 
       <footer className="global-app-footer">
         <div className="global-app-footer-content">
-          <span className="security-tag-badge">🛡️ [F-204 IT CELL PROTECTED]</span>
+          <span className="security-tag-badge">🛡️ Enterprise Grade Security • Role-Governed Access</span>
+          <span className="footer-copyright-text">TeamSpace Workspace • Self-Hosted &amp; Private</span>
         </div>
       </footer>
     </div>

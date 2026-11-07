@@ -8,13 +8,13 @@ export default function AIStudioPage() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `### ⚡ Groq Work Studio — Enterprise Intelligence Core\nWelcome to TeamSpace's dedicated technical workspace, built for high-pressure engineering and disciplined workplace productivity.`,
+      content: `### ⚡ TeamSpace AI Work Studio — Native Intelligence Core\nWelcome to TeamSpace's dedicated technical workspace, built for high-pressure engineering, software architecture, and disciplined workplace productivity.`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeModel, setActiveModel] = useState('GPT-OSS 120B');
+  const [activeModel, setActiveModel] = useState('Neural Core 120B');
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [error, setError] = useState('');
   const messagesStreamRef = useRef(null);
@@ -78,7 +78,7 @@ export default function AIStudioPage() {
         }
       ]);
     } catch (err) {
-      setError(`⚠️ Groq Gateway Error: ${err.message}`);
+      setError(`⚠️ AI Gateway Error: ${err.message}`);
       setMessages(prev => prev.slice(0, -1));
       setInput(text);
     } finally {
@@ -103,7 +103,7 @@ export default function AIStudioPage() {
     setMessages([
       {
         role: 'assistant',
-        content: `### ⚡ Groq Work Studio — Enterprise Intelligence Core\nWelcome to TeamSpace's dedicated technical workspace, built for high-pressure engineering and disciplined workplace productivity.`,
+        content: `### ⚡ TeamSpace AI Work Studio — Native Intelligence Core\nWelcome to TeamSpace's dedicated technical workspace, built for high-pressure engineering, software architecture, and disciplined workplace productivity.`,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]);
@@ -111,13 +111,13 @@ export default function AIStudioPage() {
 
   const exportMarkdown = () => {
     const transcript = messages
-      .map(m => `### ${m.role === 'user' ? '👤 Engineer' : '⚡ Groq AI Work Engine'} (${m.time})\n\n${m.content}\n\n---`)
+      .map(m => `### ${m.role === 'user' ? '👤 Engineer' : '⚡ TeamSpace AI Engine'} (${m.time})\n\n${m.content}\n\n---`)
       .join('\n\n');
     const blob = new Blob([transcript], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `GroqAI_WorkStudio_${new Date().toISOString().split('T')[0]}.md`;
+    a.download = `TeamSpace_AI_Studio_${new Date().toISOString().split('T')[0]}.md`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -263,7 +263,7 @@ export default function AIStudioPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: '1.4rem' }}>⚡</span>
             <div>
-              <h1 style={{ margin: 0, fontSize: '1.3rem', color: '#fff', lineHeight: 1.2 }}>Groq AI Work Studio</h1>
+              <h1 style={{ margin: 0, fontSize: '1.3rem', color: '#fff', lineHeight: 1.2 }}>TeamSpace AI Studio</h1>
               <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#8888aa' }}>
                 Dedicated enterprise workspace for software architecture, code optimization, database schemas, and sprint execution.
               </p>
@@ -273,7 +273,7 @@ export default function AIStudioPage() {
 
         <div className="ai-studio-header-actions">
           <span className="ai-studio-status-pill">
-            <span className="pulse-dot-green" /> Groq LPU Engine · {activeModel}
+            <span className="pulse-dot-green" /> TeamSpace Neural Engine · Active
           </span>
           <button onClick={exportMarkdown} className="btn btn-secondary btn-sm" title="Export Markdown Transcript">
             📥 Export .md
@@ -297,7 +297,7 @@ export default function AIStudioPage() {
                   </div>
                   <div className="ai-studio-msg-body">
                     <div className="ai-studio-msg-head">
-                      <strong>{isUser ? 'Engineer' : 'Groq AI Work Engine'}</strong>
+                      <strong>{isUser ? 'Engineer' : 'TeamSpace AI Engine'}</strong>
                       <span className="ai-studio-msg-time">{msg.time}</span>
                       {!isUser && (
                         <button
@@ -323,8 +323,8 @@ export default function AIStudioPage() {
                 <div className="ai-studio-avatar">⚡</div>
                 <div className="ai-studio-msg-body">
                   <div className="ai-studio-msg-head">
-                    <strong>Groq AI Work Engine</strong>
-                    <span style={{ color: 'var(--accent)', fontSize: '0.78rem' }}>Processing through Groq LPU...</span>
+                    <strong>TeamSpace AI Engine</strong>
+                    <span style={{ color: 'var(--accent)', fontSize: '0.78rem' }}>Processing reasoning &amp; response...</span>
                   </div>
                   <div className="pro-ai-wave-dots" style={{ marginTop: 8 }}>
                     <span />

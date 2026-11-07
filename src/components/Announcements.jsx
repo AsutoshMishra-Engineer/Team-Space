@@ -183,7 +183,7 @@ export default function Announcements({ teamId, teamName, isLeader, members = []
       setDiagnosticResult({
         success: true,
         title: '📱 Native Android Notifications Active',
-        message: 'TeamSpace Android App is powered by official Google Firebase Cloud Messaging.\n\nAll high-priority heads-up announcements, sound & vibration are active automatically!'
+        message: 'TeamSpace Native App is active with High-Priority Push Alerts.\n\nAll real-time announcements, heads-up sound & vibration are delivered directly to your notification tray!'
       });
       return;
     }
@@ -234,13 +234,13 @@ export default function Announcements({ teamId, teamName, isLeader, members = []
         await dispatchPushNotification({
           teamId,
           userId: user?.id,
-          title: '📢 TeamSpace Native Android Test',
-          message: '🚀 Real push notification delivered directly to your Android device via Google FCM!'
+          title: '📢 TeamSpace Native Push Test',
+          message: '🚀 Real push notification delivered directly to your Android device!'
         });
         setDiagnosticResult({
           success: true,
           title: '✅ Alert Dispatched to Your Phone!',
-          message: 'The notification was sent to your Android system notification tray via Google Firebase!\n\n👉 Swipe down from the top of your phone screen to see it.'
+          message: 'The notification was delivered directly to your Android system notification tray!\n\n👉 Swipe down from the top of your phone screen to see it.'
         });
       } catch (err) {
         setDiagnosticResult({
@@ -646,7 +646,7 @@ export default function Announcements({ teamId, teamName, isLeader, members = []
       {isNativeApp && (
         <div className="native-app-badge-bar">
           <span className="pulse-dot-green"></span>
-          <span><strong>TeamSpace Native Android App</strong> • Google Firebase Cloud Messaging Active</span>
+          <span><strong>TeamSpace Native Android App</strong> • Live Push Engine Connected</span>
         </div>
       )}
 

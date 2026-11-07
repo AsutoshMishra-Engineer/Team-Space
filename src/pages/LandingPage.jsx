@@ -15,15 +15,15 @@ export default function LandingPage() {
       {/* Hero */}
       <div className="hero-section">
         <div className="hero-badge" style={{ fontWeight: 700, letterSpacing: '0.5px' }}>
-          🛡️ It is a F-204 DEMO PROJECT
+          ✨ Enterprise Team Collaboration &amp; Agile Execution Platform
         </div>
         <h1 className="landing-title">
           Your Team's<br />
           <span className="title-highlight">Command Center</span>
         </h1>
         <p className="landing-subtitle">
-          Create teams, collaborate in real-time, share files, and get AI assistance —
-          all in one beautiful workspace.
+          Create private workspaces, collaborate in real-time, share files, and boost execution with native AI assistance —
+          all in one unified platform.
         </p>
         <div className="landing-buttons">
           <Link to="/register" className="btn btn-primary btn-hero">
@@ -32,8 +32,17 @@ export default function LandingPage() {
           <Link to="/login" className="btn btn-secondary btn-hero">
             Sign In
           </Link>
+          <a
+            href="https://github.com/AsutoshMishra-Engineer/Team-Space/releases/latest"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-ghost btn-hero"
+            style={{ border: '1px solid rgba(255, 255, 255, 0.15)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
+            📱 Download Android APK
+          </a>
         </div>
-        <p className="hero-note">No credit card needed · Free forever</p>
+        <p className="hero-note">No credit card needed · Free forever · Self-contained &amp; Private</p>
       </div>
 
       {/* Stats bar */}
@@ -84,9 +93,9 @@ export default function LandingPage() {
         </div>
         <div className="feature-card">
           <div className="feature-icon-wrap" style={{ background: 'rgba(244,114,182,0.12)', color: '#f472b6' }}>✨</div>
-          <h3 className="feature-title">AI Assistant</h3>
+          <h3 className="feature-title">Native AI Assistant</h3>
           <p className="feature-desc">
-            Built-in AI powered by Groq — get coding help, writing help, anything.
+            Proprietary TeamSpace technical intelligence — code analysis, system design, meeting summaries, and agile workflows.
           </p>
         </div>
         <div className="feature-card">
