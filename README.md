@@ -13,6 +13,7 @@
 [![Vite](https://img.shields.io/badge/Vite-6.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL%20%26%20RLS-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers%20Edge%20API-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+[![Grok AI](https://img.shields.io/badge/Grok%20AI-LPU%20Intelligence%20Engine-FF6F00?style=for-the-badge&logo=fastapi&logoColor=white)](https://groq.com/)
 
 **[🌐 Live Production Website](https://teamspace204.asutoshm359.workers.dev)** • **[📱 Download Android App (.apk)](https://github.com/AsutoshMishra-Engineer/Team-Space/releases/download/v1.0.1-android/app-debug.apk)** • **[📦 All Releases](https://github.com/AsutoshMishra-Engineer/Team-Space/releases)**
 
@@ -100,10 +101,11 @@ Deployed globally on the **Cloudflare Workers Edge Network**, backed by **Supaba
 * **Contribution & Task Notes:** Leaders log daily deliverables and tag records as verified.
 * **Audit Trail & Analytics:** Automatic logging of who marked and modified attendance, accompanied by monthly attendance percentage summaries and date filters.
 
-### 7. ⚡ TeamSpace AI Work Studio (`/workspace/ai`)
+### 7. ⚡ AI Chatbot — Powered by Grok AI Engine (`/workspace/ai`)
+* **Grok AI Critical Thinking:** Backed by Grok AI reasoning architecture and ultra-fast LPU inference (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b`, `openai/gpt-oss-20b`), engineered for critical evaluation, edge-case detection, and code synthesis.
+* **Direct & Signal-Focused:** Answers strictly what is asked with zero conversational fluff, highlighting critical engineering observations in crisp, organized bullet points.
 * **Single-Page Viewport Layout:** Matches modern conversational AI tools with `100vh` zero outer-scroll design, smooth internal message stream scrolling, and a pinned bottom input console.
 * **Zero-Token Client Guardrail:** Intercepts casual or entertainment queries client-side before touching the network, preserving 100% of API tokens and returning an instant workplace refocus reminder.
-* **Enterprise Work Culture:** Trained specifically for code refactoring, PostgreSQL RLS schema generation, 6-state task breakdowns, incident postmortems, and executive team communications.
 * **Export & Tools:** 1-click Markdown (`.md`) export, session reset, and copyable syntax-highlighted code blocks.
 
 ### 8. 🌐 Integrated Dashboard Google Search
@@ -118,6 +120,7 @@ Deployed globally on the **Cloudflare Workers Edge Network**, backed by **Supaba
 | **Frontend Framework** | React 18.3 + Vite 6.4 | Fast component architecture, JSX rendering, and dev server |
 | **Performance** | React.lazy() + Rollup manualChunks | Route-level code splitting (`LandingPage` 4.8 kB, `LoginPage` 6.2 kB) |
 | **Edge Compute & Host** | Cloudflare Workers + Static Assets | Serverless edge API routing, push dispatch & single-page app hosting |
+| **AI Intelligence** | Grok AI / Groq LPU Engine | High-speed LLM reasoning with critical thinking for engineering and code workflows |
 | **Database & Auth** | Supabase (PostgreSQL 15) | Relational storage, Auth, RPC functions & strict Row Level Security |
 | **Realtime Engine** | Supabase Realtime | WebSocket channels for live team chat and status broadcasts |
 | **Media Cloud Storage** | Cloudinary / Supabase Storage | Encrypted upload, storage, and in-browser preview of files |

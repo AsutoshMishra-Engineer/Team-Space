@@ -8,13 +8,13 @@ export default function AIStudioPage() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `### ⚡ TeamSpace AI Work Studio — Native Intelligence Core\nWelcome to TeamSpace's dedicated technical workspace, built for high-pressure engineering, software architecture, and disciplined workplace productivity.`,
+      content: `### ⚡ AI Assistant\nWelcome to your team's technical assistant. Ask questions, request code reviews, or design system architectures. Answers are direct, concise, and focused strictly on what you need.`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeModel, setActiveModel] = useState('Neural Core 120B');
+  const [activeModel, setActiveModel] = useState('Active');
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [error, setError] = useState('');
   const messagesStreamRef = useRef(null);
@@ -103,7 +103,7 @@ export default function AIStudioPage() {
     setMessages([
       {
         role: 'assistant',
-        content: `### ⚡ TeamSpace AI Work Studio — Native Intelligence Core\nWelcome to TeamSpace's dedicated technical workspace, built for high-pressure engineering, software architecture, and disciplined workplace productivity.`,
+        content: `### ⚡ AI Assistant\nWelcome to your team's technical assistant. Ask questions, request code reviews, or design system architectures. Answers are direct, concise, and focused strictly on what you need.`,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]);
@@ -263,9 +263,9 @@ export default function AIStudioPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: '1.4rem' }}>⚡</span>
             <div>
-              <h1 style={{ margin: 0, fontSize: '1.3rem', color: '#fff', lineHeight: 1.2 }}>TeamSpace AI Studio</h1>
+              <h1 style={{ margin: 0, fontSize: '1.3rem', color: '#fff', lineHeight: 1.2 }}>AI Chatbot</h1>
               <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#8888aa' }}>
-                Dedicated enterprise workspace for software architecture, code optimization, database schemas, and sprint execution.
+                Dedicated technical workspace for software architecture, code optimization, database schemas, and sprint execution.
               </p>
             </div>
           </div>
@@ -273,7 +273,7 @@ export default function AIStudioPage() {
 
         <div className="ai-studio-header-actions">
           <span className="ai-studio-status-pill">
-            <span className="pulse-dot-green" /> TeamSpace Neural Engine · Active
+            <span className="pulse-dot-green" /> AI Chatbot · Active
           </span>
           <button onClick={exportMarkdown} className="btn btn-secondary btn-sm" title="Export Markdown Transcript">
             📥 Export .md
@@ -297,7 +297,7 @@ export default function AIStudioPage() {
                   </div>
                   <div className="ai-studio-msg-body">
                     <div className="ai-studio-msg-head">
-                      <strong>{isUser ? 'Engineer' : 'TeamSpace AI Engine'}</strong>
+                      <strong>{isUser ? 'Engineer' : 'AI Assistant'}</strong>
                       <span className="ai-studio-msg-time">{msg.time}</span>
                       {!isUser && (
                         <button
@@ -323,8 +323,8 @@ export default function AIStudioPage() {
                 <div className="ai-studio-avatar">⚡</div>
                 <div className="ai-studio-msg-body">
                   <div className="ai-studio-msg-head">
-                    <strong>TeamSpace AI Engine</strong>
-                    <span style={{ color: 'var(--accent)', fontSize: '0.78rem' }}>Processing reasoning &amp; response...</span>
+                    <strong>AI Assistant</strong>
+                    <span style={{ color: 'var(--accent)', fontSize: '0.78rem' }}>Thinking &amp; analyzing...</span>
                   </div>
                   <div className="pro-ai-wave-dots" style={{ marginTop: 8 }}>
                     <span />

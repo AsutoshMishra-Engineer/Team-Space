@@ -39,7 +39,7 @@ export const Layout = ({ children }) => {
             <div className="navbar-user">
               <div className="navbar-user-id">ID: {profile?.user_id}</div>
               <Link to="/workspace" className="btn btn-ghost btn-small">Dashboard</Link>
-              <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="TeamSpace AI Studio">⚡ AI Studio</Link>
+              <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="AI Chatbot">⚡ AI Chatbot</Link>
               <div className="navbar-avatar" title={profile?.username || 'Profile'}>
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="avatar" className="nav-avatar-img" />

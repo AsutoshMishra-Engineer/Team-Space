@@ -3,12 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function LandingPage() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user && !loading) navigate('/workspace');
-  }, [user, loading, navigate]);
+  const { user } = useAuth();
 
   return (
     <div className="landing">
@@ -26,12 +21,20 @@ export default function LandingPage() {
           all in one unified platform.
         </p>
         <div className="landing-buttons">
-          <Link to="/register" className="btn btn-primary btn-hero">
-            🚀 Get Started Free
-          </Link>
-          <Link to="/login" className="btn btn-secondary btn-hero">
-            Sign In
-          </Link>
+          {user ? (
+            <Link to="/workspace" className="btn btn-primary btn-hero">
+              🚀 Open Workspace Dashboard →
+            </Link>
+          ) : (
+            <>
+              <Link to="/register" className="btn btn-primary btn-hero">
+                🚀 Get Started Free
+              </Link>
+              <Link to="/login" className="btn btn-secondary btn-hero">
+                Sign In
+              </Link>
+            </>
+          )}
           <a
             href="https://github.com/AsutoshMishra-Engineer/Team-Space/releases/latest"
             target="_blank"
@@ -117,9 +120,15 @@ export default function LandingPage() {
       {/* CTA Bottom */}
       <div className="landing-cta">
         <h2 className="cta-title">Ready to level up your team?</h2>
-        <Link to="/register" className="btn btn-primary btn-hero">
-          Create Your First Team →
-        </Link>
+        {user ? (
+          <Link to="/workspace" className="btn btn-primary btn-hero">
+            Open Your Workspace Dashboard →
+          </Link>
+        ) : (
+          <Link to="/register" className="btn btn-primary btn-hero">
+            Create Your First Team →
+          </Link>
+        )}
       </div>
     </div>
   );
