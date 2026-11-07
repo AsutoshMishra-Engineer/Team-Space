@@ -56,7 +56,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Connection Issue"
+            android:text="@string/connection_issue"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -65,7 +65,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Unable to reach TeamSpace. Please check your internet connection and try again."
+            android:text="@string/connection_desc"
             android:textColor="#94A3B8"
             android:textSize="14sp"
             android:gravity="center"
@@ -75,7 +75,7 @@
             android:id="@+id/btnRetry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🔄 Retry Connection"
+            android:text="@string/retry_connection"
             android:backgroundTint="@color/primary"
             android:textColor="@color/white"
             android:paddingHorizontal="24dp"

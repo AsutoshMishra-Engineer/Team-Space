@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">TeamSpace</string>
-    <string name="notification_channel_name">Team Announcements & Tasks</string>
+    <string name="notification_channel_name">Team Announcements &amp; Tasks</string>
     <string name="notification_channel_desc">Instant high-priority alerts for team announcements, deadlines, and smart tasks.</string>
+    <string name="connection_issue">Connection Issue</string>
+    <string name="connection_desc">Unable to reach TeamSpace. Please check your internet connection and try again.</string>
+    <string name="retry_connection">Retry Connection</string>
 </resources>

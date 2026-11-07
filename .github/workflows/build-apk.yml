@@ -37,25 +37,9 @@ jobs:
       - name: 🔨 Compile Android APK
         shell: bash
         run: |
-          set -o pipefail
           cd android
           chmod +x ./gradlew
-          if ! ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee ../build.log; then
-            echo "### ❌ Build Failed" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            tail -n 80 ../build.log >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
-          echo "### ✅ Android APK Compiled Successfully!" >> $GITHUB_STEP_SUMMARY
-
-      - name: 📄 Upload Build Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: TeamSpace-Build-Log
-          path: build.log
-          if-no-files-found: ignore
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: 📦 Upload APK Artifact
         uses: actions/upload-artifact@v4
