@@ -34,7 +34,16 @@ jobs:
       - name: 🔨 Compile Android APK
         run: |
           cd android
-          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee ../gradle-build.log || (echo "### ❌ Build Failure Details" >> $GITHUB_STEP_SUMMARY && echo '```' >> $GITHUB_STEP_SUMMARY && tail -n 100 ../gradle-build.log >> $GITHUB_STEP_SUMMARY && echo '```' >> $GITHUB_STEP_SUMMARY && exit 1)
+          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee ../gradle-build.log
+
+      - name: 📝 Push Log on Failure
+        if: failure()
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add gradle-build.log
+          git commit -m "ci: android build failure log" || true
+          git push origin main || true
 
       - name: 📝 Upload Build Output Log
         if: always()
