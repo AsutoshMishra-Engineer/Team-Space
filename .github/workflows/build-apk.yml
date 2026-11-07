@@ -36,20 +36,20 @@ jobs:
       - name: 🔨 Compile Android APK
         run: |
           cd android
-          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee ../gradle-build.log
+          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee build.log
 
       - name: 🔍 Display Build Failure Reason
         if: failure()
         run: |
           echo "==================== BUILD ERROR ===================="
-          cat ../gradle-build.log | grep -E "ERROR:|FAILURE:|Exception:|Caused by:" -B 2 -A 8 || tail -n 80 ../gradle-build.log
+          cat android/build.log | grep -E "ERROR:|FAILURE:|Exception:|Caused by:" -B 2 -A 8 || tail -n 80 android/build.log
           echo "====================================================="
+          cp android/build.log ./build-failure.log
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          cp ../gradle-build.log ./build-failure.log
           git add ./build-failure.log
-          git commit -m "ci: android build failure log" || true
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main || true
+          git commit -m "ci: android build failure log" || exit 0
+          git push origin main
 
       - name: 📦 Upload APK Artifact
         uses: actions/upload-artifact@v4
