@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { syncPushSubscriptionWithDatabase, sendTestPushToDevice } from '../lib/pushService';
+import { syncPushSubscriptionWithDatabase, sendTestPushToDevice, dispatchPushNotification } from '../lib/pushService';
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
 
@@ -34,7 +34,21 @@ export default function NotificationPreferences() {
     vibration_enabled: true
   });
 
+  const isNative = typeof window !== 'undefined' && (
+    Boolean(window.TeamSpaceNative?.isNativeApp?.()) ||
+    Boolean(window.__TEAMSPACE_NATIVE_FCM_TOKEN__) ||
+    /TeamSpaceNativeApp/i.test(navigator?.userAgent || '')
+  );
+
   useEffect(() => {
+    if (isNative) {
+      setIsSupported(true);
+      setPermission('granted');
+      loadPreferences();
+      loadDeviceCount();
+      return;
+    }
+
     if (typeof window === 'undefined' || !('Notification' in window) || !('serviceWorker' in navigator)) {
       setIsSupported(false);
       setLoading(false);
@@ -159,6 +173,17 @@ export default function NotificationPreferences() {
   };
 
   const requestNotificationPermission = async () => {
+    if (isNative) {
+      await syncPushSubscriptionWithDatabase(user?.id);
+      await loadDeviceCount();
+      setStatusMessage({
+        type: 'success',
+        title: '✅ Native Android Notifications Active!',
+        body: 'Your device is linked to Google Firebase Cloud Messaging for instant heads-up alerts.'
+      });
+      return;
+    }
+
     if (!('Notification' in window)) {
       setStatusMessage({
         type: 'error',
@@ -195,6 +220,31 @@ export default function NotificationPreferences() {
   };
 
   const handleTestAlert = async () => {
+    if (isNative) {
+      try {
+        setTesting(true);
+        await dispatchPushNotification({
+          userId: user?.id,
+          title: '📢 TeamSpace Native Android Test',
+          message: '🚀 Real-time Google Firebase notification delivered directly to your Android device!'
+        });
+        setStatusMessage({
+          type: 'success',
+          title: '🔔 Native Alert Dispatched!',
+          body: 'Google Firebase has sent a high-priority heads-up alert to your phone! Swipe down to view it.'
+        });
+      } catch (err) {
+        setStatusMessage({
+          type: 'error',
+          title: '⚠️ Dispatch Note',
+          body: err.message
+        });
+      } finally {
+        setTesting(false);
+      }
+      return;
+    }
+
     if (permission !== 'granted') {
       await requestNotificationPermission();
       return;

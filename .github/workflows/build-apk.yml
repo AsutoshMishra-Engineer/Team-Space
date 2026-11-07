@@ -54,24 +54,26 @@ jobs:
         continue-on-error: true
         if: startsWith(github.ref, 'refs/heads/main')
         with:
-          tag_name: v1.0.0-android
-          name: "TeamSpace Android App v1.0.0"
+          tag_name: v1.0.1-android
+          name: "TeamSpace Android App v1.0.1 (Optimized)"
           generate_release_notes: false
           body: |
-            ### 🚀 TeamSpace Android App — Direct APK Download
+            ### 🚀 TeamSpace Android App v1.0.1 — Optimized Mobile Release
 
-            This is the official native Android release for **TeamSpace**, powered by Google Firebase Cloud Messaging.
+            This update resolves mobile viewport text overlapping and optimizes push notification status for Android devices.
 
             - **App Name:** TeamSpace
+            - **Version:** `1.0.1` (Build 2)
             - **Package:** `com.teamspace.app`
-            - **Target:** Android 8.0 to Android 14+
-            - **Security:** 100% clean, verified, bank-grade TLS encryption, zero third-party trackers.
-            - **Notifications:** Native high-priority heads-up push notifications with sound & vibration.
-
-            #### 📲 Installation Instructions:
+            - **Key Improvements:**
+              - 📱 Native 1:1 mobile viewport rendering (no text overlaps or cramped flex containers).
+              - 🔤 Normalized font scaling across all Android device display settings.
+              - 🔔 Direct Google Firebase Cloud Messaging native status bridge (no "browser unsupported" warnings).
+              - ⚡ Edge-accelerated with instant Swipe-to-Refresh.
+            
+            #### 📲 Installation:
             1. Download `app-debug.apk` below directly to your phone.
-            2. Tap the downloaded file to install.
-            3. Grant notification permissions when prompted.
+            2. Tap to install (updates existing TeamSpace app seamlessly).
           files: android/app/build/outputs/apk/debug/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
