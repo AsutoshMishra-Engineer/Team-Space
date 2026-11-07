@@ -63,7 +63,7 @@ jobs:
             - **Notifications:** Native high-priority heads-up push notifications with sound & vibration.
             
             #### 📲 Installation Instructions:
-            1. Download `TeamSpace-v1.0.0.apk` below directly to your phone.
+            1. Download `app-debug.apk` below directly to your phone.
             2. Tap the downloaded file to install.
             3. Grant notification permissions when prompted.
           files: android/app/build/outputs/apk/debug/app-debug.apk
