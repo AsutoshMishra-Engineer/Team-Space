@@ -19,7 +19,7 @@ const STATUS_CONFIG = {
   changes_requested: { label: 'Changes Requested', badge: 'status-changes', icon: '⚠️' }
 };
 
-export default function SmartTasks({ teamId, isLeader, members = [] }) {
+export default function SmartTasks({ teamId, teamName, isLeader, members = [] }) {
   const { user, profile } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -150,11 +150,13 @@ export default function SmartTasks({ teamId, isLeader, members = [] }) {
       // Dispatch Web Push notification to assignee
       if (newAssignee) {
         try {
+          const assignerName = profile?.username?.trim() || profile?.user_id || 'Team Leader';
+          const teamTag = teamName ? ` • ${teamName}` : '';
           dispatchPushNotification({
             teamId,
             userId: newAssignee,
-            title: `📋 New Task Assigned: ${newTitle}`,
-            message: `You were assigned a ${newPriority.toUpperCase()} priority task. Deadline: ${new Date(newDeadline).toLocaleDateString()}`,
+            title: `📋 ${assignerName}${teamTag}`,
+            message: `Assigned task: "${newTitle}" (Priority: ${newPriority.toUpperCase()}, Due: ${new Date(newDeadline).toLocaleDateString()})`,
             url: window.location.origin + '/#/workspace',
             tag: 'task-assigned'
           });
@@ -242,10 +244,12 @@ export default function SmartTasks({ teamId, isLeader, members = [] }) {
 
       // Notify team leader
       try {
+        const submitterName = profile?.username?.trim() || profile?.user_id || 'Team Member';
+        const teamTag = teamName ? ` • ${teamName}` : '';
         dispatchPushNotification({
           teamId,
-          title: `👀 Task Ready for Review: ${showSubmitModal.title}`,
-          message: `${profile?.username || 'Member'} has submitted their work for review.`,
+          title: `👀 ${submitterName}${teamTag}`,
+          message: `Submitted task for review: "${showSubmitModal.title}"`,
           url: window.location.origin + '/#/workspace',
           tag: 'task-review'
         });
@@ -288,13 +292,17 @@ export default function SmartTasks({ teamId, isLeader, members = [] }) {
       // Push notify assignee
       if (showReviewModal.assigned_to) {
         try {
+          const leaderName = profile?.username?.trim() || profile?.user_id || 'Team Leader';
+          const teamTag = teamName ? ` • ${teamName}` : '';
           dispatchPushNotification({
             teamId,
             userId: showReviewModal.assigned_to,
-            title: decision === 'approve' ? `🎉 Task Approved!` : `⚠️ Revisions Requested`,
+            title: decision === 'approve'
+              ? `🎉 ${leaderName}${teamTag}`
+              : `⚠️ ${leaderName}${teamTag}`,
             message: decision === 'approve'
-              ? `Leader marked "${showReviewModal.title}" as Completed!`
-              : `Leader feedback: ${feedbackNotes.trim()}`,
+              ? `Approved "${showReviewModal.title}". Task is completed!`
+              : `Requested revisions on "${showReviewModal.title}": "${feedbackNotes.trim()}"`,
             url: window.location.origin + '/#/workspace',
             tag: 'task-decision'
           });

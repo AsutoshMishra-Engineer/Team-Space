@@ -33,6 +33,8 @@ export default function AuthCallbackPage() {
         const { data: { session } } = await supabase.auth.getSession();
 
         if (session?.user) {
+          const metaName = session.user.user_metadata?.username || session.user.user_metadata?.full_name;
+
           // Fetch profile with retries (trigger may take a moment)
           let retries = 5;
           let profileId = null;
@@ -40,12 +42,19 @@ export default function AuthCallbackPage() {
           while (retries > 0 && !profileId) {
             const { data: profile } = await supabase
               .from('profiles')
-              .select('user_id')
+              .select('user_id, username')
               .eq('id', session.user.id)
               .single();
 
             if (profile?.user_id) {
               profileId = profile.user_id;
+              // If profile exists but username was not saved, update it from metadata
+              if (!profile.username && metaName) {
+                await supabase
+                  .from('profiles')
+                  .update({ username: metaName.trim() })
+                  .eq('id', session.user.id);
+              }
               break;
             }
 

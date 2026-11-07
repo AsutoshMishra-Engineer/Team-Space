@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NetworkStatus from './NetworkStatus';
+import CompulsoryNameModal from './CompulsoryNameModal';
 import { syncPushSubscriptionWithDatabase } from '../lib/pushService';
 
 export const Layout = ({ children }) => {
@@ -24,6 +25,9 @@ export const Layout = ({ children }) => {
     <div className="app-layout">
       {/* Network status bar — always at top */}
       <NetworkStatus />
+
+      {/* Compulsory real name collection for existing & new members */}
+      <CompulsoryNameModal />
 
       <nav className="navbar">
         <Link to="/" className="navbar-brand">

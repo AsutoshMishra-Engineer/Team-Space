@@ -24,13 +24,61 @@ const BG_OPTIONS = [
 ];
 
 export default function PersonalSettings({ onClose }) {
-  const { profile, updateProfile, applyTheme, applyBackground } = useAuth();
-  const [activeTab, setActiveTab] = useState('appearance'); // 'appearance' | 'profile' | 'notifications'
+  const { profile, updateProfile, applyTheme, applyBackground, user } = useAuth();
+  const [activeTab, setActiveTab] = useState('appearance'); // 'appearance' | 'profile' | 'profile_info' | 'notifications'
   const [selectedColor, setSelectedColor] = useState(profile?.theme_color || 'Indigo');
   const [selectedBg, setSelectedBg] = useState(profile?.bg_color || 'Dark');
   const [quote, setQuote] = useState(profile?.personal_quote || '');
+  const [editableName, setEditableName] = useState(profile?.username || '');
+  const [savingName, setSavingName] = useState(false);
+  const [nameSaved, setNameSaved] = useState(false);
+  const [nameError, setNameError] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  const handleUpdateName = async (e) => {
+    e?.preventDefault();
+    const cleanName = editableName.trim();
+    if (cleanName.length < 2) {
+      setNameError('Name must be at least 2 characters.');
+      return;
+    }
+    if (profile?.user_id && cleanName.toLowerCase() === profile.user_id.toLowerCase()) {
+      setNameError('Please enter your actual name rather than your User ID.');
+      return;
+    }
+
+    try {
+      setSavingName(true);
+      setNameError('');
+      const { error: updateErr } = await supabase
+        .from('profiles')
+        .update({
+          username: cleanName,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', (user?.id || profile?.id));
+
+      if (updateErr) throw updateErr;
+
+      try {
+        await supabase.auth.updateUser({
+          data: { username: cleanName, full_name: cleanName }
+        });
+      } catch (e) {}
+
+      updateProfile({
+        ...profile,
+        username: cleanName
+      });
+      setNameSaved(true);
+      setTimeout(() => setNameSaved(false), 2500);
+    } catch (err) {
+      setNameError(err.message || 'Failed to update name');
+    } finally {
+      setSavingName(false);
+    }
+  };
 
   const handleColorClick = (colorName) => {
     setSelectedColor(colorName);
@@ -231,10 +279,42 @@ export default function PersonalSettings({ onClose }) {
               <div className="pro-settings-block">
                 <div className="pro-block-header">
                   <div>
-                    <h4>Account Identifier & Security</h4>
-                    <p>Read-only verified identity credentials registered with your session.</p>
+                    <h4>Verified Identity & Display Name</h4>
+                    <p>Your official name is displayed in announcements, push notifications, and task assignments.</p>
                   </div>
                 </div>
+
+                {nameError && <div className="alert alert-error mb-2">{nameError}</div>}
+                {nameSaved && <div className="alert alert-success mb-2">✅ Display name updated successfully!</div>}
+
+                <form onSubmit={handleUpdateName} style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.4rem' }}>
+                    Full Name / Display Name:
+                  </label>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <input
+                      type="text"
+                      className="form-input"
+                      style={{ flex: '1 1 240px', background: 'rgba(15, 17, 30, 0.8)' }}
+                      placeholder="e.g. Asutosh Mishra"
+                      value={editableName}
+                      onChange={(e) => setEditableName(e.target.value)}
+                      maxLength={50}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      disabled={savingName || editableName.trim().length < 2 || editableName.trim() === profile?.username}
+                      className="btn btn-primary"
+                      style={{ padding: '8px 18px', whiteSpace: 'nowrap' }}
+                    >
+                      {savingName ? 'Saving...' : 'Update Name'}
+                    </button>
+                  </div>
+                  <span style={{ fontSize: '0.74rem', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                    This name will appear on teammates' Android notifications like WhatsApp / Instagram.
+                  </span>
+                </form>
 
                 <div className="pro-account-details-grid">
                   <div className="pro-account-field">
@@ -246,8 +326,8 @@ export default function PersonalSettings({ onClose }) {
                     <div className="pro-account-val">{profile?.email || 'Authenticated User'}</div>
                   </div>
                   <div className="pro-account-field">
-                    <label>Display Username:</label>
-                    <div className="pro-account-val">{profile?.username || 'Team Member'}</div>
+                    <label>Active Display Name:</label>
+                    <div className="pro-account-val" style={{ color: '#a5b4fc', fontWeight: 600 }}>{profile?.username || 'Not Set'}</div>
                   </div>
                   <div className="pro-account-field">
                     <label>Cloud Storage Bucket:</label>

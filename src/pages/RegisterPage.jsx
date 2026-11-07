@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
 export default function RegisterPage() {
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -21,6 +22,12 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
+    const cleanName = fullName.trim();
+    if (cleanName.length < 2) {
+      setError('Please enter your full name (minimum 2 characters).');
+      return;
+    }
+
     if (password.length < 8) {
       setError('Password must be at least 8 characters.');
       return;
@@ -35,6 +42,10 @@ export default function RegisterPage() {
         password,
         options: {
           emailRedirectTo: window.location.origin + '/#/auth/callback',
+          data: {
+            username: cleanName,
+            full_name: cleanName
+          }
         }
       });
 
@@ -93,6 +104,21 @@ export default function RegisterPage() {
         {error && <div className="alert alert-error">{error}</div>}
 
         <form onSubmit={handleRegister}>
+          <div className="form-group">
+            <label className="form-label">Full Name / Display Name</label>
+            <input
+              type="text"
+              className="form-input"
+              placeholder="e.g. Asutosh Mishra"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+              minLength={2}
+              maxLength={50}
+              autoFocus
+            />
+            <p className="form-hint">Used for announcements, tasks &amp; notifications</p>
+          </div>
           <div className="form-group">
             <label className="form-label">Email Address</label>
             <input

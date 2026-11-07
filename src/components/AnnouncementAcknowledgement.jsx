@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { dispatchPushNotification } from '../lib/pushService';
 
 export default function AnnouncementAcknowledgement({ announcement, isLeader, teamId, allMembers = [] }) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [hasAcknowledged, setHasAcknowledged] = useState(false);
   const [acknowledgedAt, setAcknowledgedAt] = useState(null);
   const [ackCount, setAckCount] = useState(0);
@@ -105,10 +105,11 @@ export default function AnnouncementAcknowledgement({ announcement, isLeader, te
   const sendReminder = async () => {
     try {
       setReminding(true);
+      const senderName = profile?.username?.trim() || profile?.user_id || 'Team Leader';
       await dispatchPushNotification({
         teamId,
-        title: `⚠️ Acknowledgement Reminder`,
-        message: `Leader reminder: Please acknowledge the announcement: "${announcement.message.substring(0, 60)}..."`,
+        title: `✍️ ${senderName} (Action Required)`,
+        message: `Please acknowledge announcement: "${announcement.message.substring(0, 60)}..."`,
         url: window.location.origin + '/#/workspace',
         tag: 'ack-reminder'
       });

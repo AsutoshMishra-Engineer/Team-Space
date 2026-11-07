@@ -123,20 +123,20 @@ export default function TeamWorkspacePage() {
       {activeTab === 'feed' && (
         <div className="workspace-sections">
           <div className="left-column">
-            <Announcements teamId={teamId} isLeader={isLeader} members={members} />
+            <Announcements teamId={teamId} teamName={team?.name} isLeader={isLeader} members={members} />
           </div>
           <div className="right-column">
-            <TeamChat teamId={teamId} isLeader={isLeader} />
+            <TeamChat teamId={teamId} teamName={team?.name} isLeader={isLeader} />
           </div>
         </div>
       )}
 
       {activeTab === 'tasks' && (
-        <SmartTasks teamId={teamId} isLeader={isLeader} members={members} />
+        <SmartTasks teamId={teamId} teamName={team?.name} isLeader={isLeader} members={members} />
       )}
 
       {activeTab === 'attendance' && (
-        <WorkAttendance teamId={teamId} isLeader={isLeader} members={members} />
+        <WorkAttendance teamId={teamId} teamName={team?.name} isLeader={isLeader} members={members} />
       )}
 
       {activeTab === 'files' && (

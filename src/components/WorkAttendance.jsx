@@ -10,8 +10,8 @@ const STATUS_OPTIONS = [
   { value: 'excused', label: 'Excused / Leave', color: '#8b5cf6', bg: 'rgba(139, 92, 246, 0.15)', weight: null }
 ];
 
-export default function WorkAttendance({ teamId, isLeader, members = [] }) {
-  const { user } = useAuth();
+export default function WorkAttendance({ teamId, teamName, isLeader, members = [] }) {
+  const { user, profile } = useAuth();
   const [sessions, setSessions] = useState([]);
   const [records, setRecords] = useState([]);
   const [selectedSessionId, setSelectedSessionId] = useState('');
@@ -183,10 +183,12 @@ export default function WorkAttendance({ teamId, isLeader, members = [] }) {
       // Notify team via Push
       try {
         const currentSession = sessions.find((s) => s.id === selectedSessionId);
+        const leaderName = profile?.username?.trim() || profile?.user_id || 'Team Leader';
+        const teamTag = teamName ? ` • ${teamName}` : '';
         dispatchPushNotification({
           teamId,
-          title: `⏱️ Work Attendance Recorded`,
-          message: `Team leader verified work attendance for session "${currentSession?.title || 'Daily Standup'}".`,
+          title: `⏱️ ${leaderName}${teamTag}`,
+          message: `Verified work attendance for session "${currentSession?.title || 'Daily Standup'}".`,
           url: window.location.origin + '/#/workspace',
           tag: 'attendance-recorded'
         });

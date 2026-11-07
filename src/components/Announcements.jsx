@@ -17,7 +17,7 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-export default function Announcements({ teamId, isLeader, members = [] }) {
+export default function Announcements({ teamId, teamName, isLeader, members = [] }) {
   const { user, profile } = useAuth();
   const [announcements, setAnnouncements] = useState([]);
   const [message, setMessage] = useState('');
@@ -105,14 +105,16 @@ export default function Announcements({ teamId, isLeader, members = [] }) {
       announcementData.profiles?.username ||
       announcementData.profiles?.user_id ||
       announcementData.sender_id ||
-      'Team Leader';
+      'Team Member';
 
     const deadlineText = announcementData.deadline
       ? `\n⏰ Deadline: ${new Date(announcementData.deadline).toLocaleDateString()}`
       : '';
 
+    const teamTag = teamName ? ` • ${teamName}` : '';
+
     setInAppBanner({
-      title: `📢 New Announcement from ID: ${author}`,
+      title: `📢 ${author}${teamTag}`,
       body: announcementData.message,
       deadline: announcementData.deadline
     });
@@ -125,7 +127,7 @@ export default function Announcements({ teamId, isLeader, members = [] }) {
     if (!notificationsEnabled) return;
     if (typeof window !== 'undefined' && window.Notification?.permission && window.Notification.permission !== 'granted') return;
 
-    const title = `📢 Team Announcement: ${author}`;
+    const title = `📢 ${author}${teamTag}`;
     const iconUrl = window.location.origin + '/logo.png';
     const options = {
       body: `${announcementData.message}${deadlineText}`,
@@ -488,10 +490,12 @@ export default function Announcements({ teamId, isLeader, members = [] }) {
 
       // Background Mobile Push: Notify offline phones like WhatsApp via Google FCM & Cloudflare Worker
       try {
-        const notifPrefix = isImportant ? '⚠️ [IMPORTANT] ' : requiresAck ? '✍️ [ACK REQUIRED] ' : '📢 ';
+        const authorName = profile?.username?.trim() || profile?.user_id || 'Team Member';
+        const notifPrefix = isImportant ? '⚠️ [IMPORTANT] ' : requiresAck ? '✍️ [ACK REQUIRED] ' : '';
+        const teamTag = teamName ? ` • ${teamName}` : ' • TeamSpace';
         dispatchPushNotification({
           teamId,
-          title: `${notifPrefix}Announcement: ${profile?.username || profile?.user_id || 'Team Member'}`,
+          title: `${notifPrefix}📢 ${authorName}${teamTag}`,
           message: textToPost,
           url: window.location.origin + '/#/workspace',
           tag: 'team-announcement'

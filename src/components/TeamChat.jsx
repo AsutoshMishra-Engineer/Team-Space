@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { dispatchPushNotification } from '../lib/pushService';
 
-export default function TeamChat({ teamId, isLeader }) {
-  const { user } = useAuth();
+export default function TeamChat({ teamId, teamName, isLeader }) {
+  const { user, profile } = useAuth();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
@@ -114,6 +115,19 @@ export default function TeamChat({ teamId, isLeader }) {
 
       if (error) throw error;
       scrollToBottom();
+
+      // Dispatch WhatsApp-style push notification to offline team members
+      try {
+        const senderName = profile?.username?.trim() || profile?.user_id || 'Teammate';
+        const teamTag = teamName ? ` • ${teamName}` : '';
+        dispatchPushNotification({
+          teamId,
+          title: `💬 ${senderName}${teamTag}`,
+          message: content,
+          url: window.location.origin + '/#/workspace',
+          tag: 'team-chat'
+        });
+      } catch (e) {}
     } catch (err) {
       alert('Failed to send: ' + err.message);
       setNewMessage(content);
