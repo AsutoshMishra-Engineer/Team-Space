@@ -40,7 +40,11 @@ class MainActivity : AppCompatActivity() {
                 data?.dataString != null -> arrayOf(Uri.parse(data.dataString))
                 data?.clipData != null -> {
                     val count = data.clipData!!.itemCount
-                    Array(count) { i -> data.clipData!!.getItemAt(i).uri }
+                    val list = mutableListOf<Uri>()
+                    for (i in 0 until count) {
+                        data.clipData!!.getItemAt(i).uri?.let { list.add(it) }
+                    }
+                    list.toTypedArray()
                 }
                 else -> null
             }
