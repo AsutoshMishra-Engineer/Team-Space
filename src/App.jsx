@@ -42,16 +42,28 @@ class ErrorBoundary extends React.Component {
           <p style={{ color: '#9090b8', maxWidth: '480px', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
             {this.state.error?.message || 'Something went wrong while rendering.'}
           </p>
-          <button
-            onClick={() => {
-              this.setState({ hasError: false, error: null });
-              window.location.href = '/#/workspace';
-              window.location.reload();
-            }}
-            className="btn btn-primary"
-          >
-            🔄 Reload Workspace
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                window.location.reload();
+              }}
+              className="btn btn-primary"
+            >
+              🔄 Reload & Reconnect
+            </button>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                window.location.href = '/#/workspace';
+                window.location.reload();
+              }}
+              className="btn btn-ghost"
+              style={{ background: 'rgba(255, 255, 255, 0.08)' }}
+            >
+              ← Back to My Teams
+            </button>
+          </div>
         </div>
       );
     }

@@ -122,8 +122,8 @@ export default function Announcements({ teamId, isLeader, members = [] }) {
       setInAppBanner((current) => (current?.body === announcementData.message ? null : current));
     }, 8000);
 
-    if (!notificationsEnabled || !('Notification' in window)) return;
-    if (Notification.permission !== 'granted') return;
+    if (!notificationsEnabled) return;
+    if (typeof window !== 'undefined' && window.Notification?.permission && window.Notification.permission !== 'granted') return;
 
     const title = `📢 Team Announcement: ${author}`;
     const iconUrl = window.location.origin + '/logo.png';
@@ -313,8 +313,8 @@ export default function Announcements({ teamId, isLeader, members = [] }) {
 
       if (reg && typeof reg.showNotification === 'function') {
         await reg.showNotification('📢 TeamSpace Mobile Alert Test', options);
-      } else {
-        new Notification('📢 TeamSpace Mobile Alert Test', options);
+      } else if (typeof window !== 'undefined' && typeof window.Notification === 'function') {
+        try { new window.Notification('📢 TeamSpace Mobile Alert Test', options); } catch (e) {}
       }
 
       playNotificationChime();
@@ -340,7 +340,7 @@ export default function Announcements({ teamId, isLeader, members = [] }) {
     fetchAnnouncements();
 
     // If notifications are already enabled, sync push token
-    if (notificationsEnabled && Notification.permission === 'granted') {
+    if (notificationsEnabled && (isNativeApp || (typeof window !== 'undefined' && window.Notification?.permission === 'granted'))) {
       subscribeToWebPush();
     }
 

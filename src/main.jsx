@@ -5,6 +5,17 @@ import { AuthProvider } from './context/AuthContext'
 import App from './App'
 import './index.css'
 
+// Android WebView & Browser Notification Safe Polyfill
+if (typeof window !== 'undefined' && !('Notification' in window)) {
+  const DummyNotification = function(title, options) {
+    console.log('[Native App] Notification handled natively:', title, options);
+    return {};
+  };
+  DummyNotification.permission = 'granted';
+  DummyNotification.requestPermission = async () => 'granted';
+  window.Notification = DummyNotification;
+}
+
 // Register Service Worker for Mobile & Desktop Chrome notifications
 if ('serviceWorker' in navigator) {
   const registerSW = () => {

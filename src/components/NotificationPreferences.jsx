@@ -293,8 +293,8 @@ export default function NotificationPreferences() {
 
       if (reg && typeof reg.showNotification === 'function') {
         await reg.showNotification('📢 TeamSpace Android Push Test', options);
-      } else {
-        new Notification('📢 TeamSpace Android Push Test', options);
+      } else if (typeof window !== 'undefined' && typeof window.Notification === 'function') {
+        try { new window.Notification('📢 TeamSpace Android Push Test', options); } catch (e) {}
       }
 
       setStatusMessage({
