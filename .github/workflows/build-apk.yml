@@ -29,30 +29,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 🐘 Setup Gradle 8.4
+      - name: 🐘 Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: '8.4'
+          cache-disabled: true
 
       - name: 🔨 Compile Android APK
         shell: bash
         run: |
-          set -o pipefail
           cd android
-          chmod +x ./gradlew || true
-          if [ -f "./gradlew" ]; then
-            ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee ../build.log
-          else
-            gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee ../build.log
-          fi
-
-      - name: 📄 Upload Build Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: TeamSpace-Build-Log
-          path: build.log
-          if-no-files-found: ignore
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: 📦 Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -77,7 +64,7 @@ jobs:
 
             - **App Name:** TeamSpace
             - **Package:** `com.teamspace.app`
-            - **Target:** Android 7.0 to Android 14+
+            - **Target:** Android 8.0 to Android 14+
             - **Security:** 100% clean, verified, bank-grade TLS encryption, zero third-party trackers.
             - **Notifications:** Native high-priority heads-up push notifications with sound & vibration.
 
