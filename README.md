@@ -7,15 +7,16 @@
 ### *Enterprise-Grade Command Center for Engineering Teams, Student Cohorts & Agile Workgroups*
 
 [![Production Status](https://img.shields.io/badge/Production-Live%20on%20Cloudflare-success?style=for-the-badge&logo=cloudflare&logoColor=white)](https://teamspace204.asutoshm359.workers.dev)
+[![Android App](https://img.shields.io/badge/Android%20App-Download%20APK%20(v1.0.0)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/AsutoshMishra-Engineer/Team-Space/releases/download/v1.0.0-android/app-debug.apk)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL%20%26%20RLS-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers%20Edge%20API-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
 [![Groq LPU](https://img.shields.io/badge/Groq-LPU%20GPT--OSS--120B-FF6F00?style=for-the-badge&logo=fastapi&logoColor=white)](https://groq.com/)
-[![Web Push](https://img.shields.io/badge/Web%20Push-VAPID%20PWA-blue?style=for-the-badge&logo=pwa&logoColor=white)](#-android-web-push-notifications)
+[![Firebase FCM](https://img.shields.io/badge/Firebase-FCM%20Native%20Push-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
 [![Security](https://img.shields.io/badge/Security-F--204%20IT%20CELL%20PROTECTED-red?style=for-the-badge)](#-security--privacy-architecture)
 
-**[🌐 Live Production Website](https://teamspace204.asutoshm359.workers.dev)** • **[GitHub Repository](https://github.com/AsutoshMishra-Engineer/Team-Space)** • **[Report an Issue](https://github.com/AsutoshMishra-Engineer/Team-Space/issues)**
+**[🌐 Live Production Website](https://teamspace204.asutoshm359.workers.dev)** • **[📲 Download Android App (.apk)](https://github.com/AsutoshMishra-Engineer/Team-Space/releases/download/v1.0.0-android/app-debug.apk)** • **[GitHub Repository](https://github.com/AsutoshMishra-Engineer/Team-Space)**
 
 </div>
 
