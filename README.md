@@ -1,22 +1,20 @@
-# 🚀 TeamSpace — Enterprise Team Workspace & Operations Hub
+# 🚀 TeamSpace — Enterprise Collaborative Workspace & Operations Hub
 
 <div align="center">
 
 <img src="public/logo.png" alt="TeamSpace Logo" width="120" style="border-radius: 24px; box-shadow: 0 8px 32px rgba(108, 99, 255, 0.35);" />
 
-### *Enterprise-Grade Command Center for Engineering Teams, Student Cohorts & Agile Workgroups*
+### *Modern All-in-One Collaborative Platform for Engineering Teams, Agile Workgroups & Student Cohorts*
 
 [![Production Status](https://img.shields.io/badge/Production-Live%20on%20Cloudflare-success?style=for-the-badge&logo=cloudflare&logoColor=white)](https://teamspace204.asutoshm359.workers.dev)
 [![Android App](https://img.shields.io/badge/Android%20App-Download%20APK%20(v1.0.1)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/AsutoshMishra-Engineer/Team-Space/releases/download/v1.0.1-android/app-debug.apk)
+[![GitHub Releases](https://img.shields.io/badge/Releases-v1.0.1--android-blue?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AsutoshMishra-Engineer/Team-Space/releases)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL%20%26%20RLS-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers%20Edge%20API-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
-[![Groq LPU](https://img.shields.io/badge/Groq-LPU%20GPT--OSS--120B-FF6F00?style=for-the-badge&logo=fastapi&logoColor=white)](https://groq.com/)
-[![Firebase FCM](https://img.shields.io/badge/Firebase-FCM%20Native%20Push-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
-[![Security](https://img.shields.io/badge/Security-F--204%20IT%20CELL%20PROTECTED-red?style=for-the-badge)](#-security--privacy-architecture)
 
-**[🌐 Live Production Website](https://teamspace204.asutoshm359.workers.dev)** • **[📲 Download Android App (.apk)](https://github.com/AsutoshMishra-Engineer/Team-Space/releases/download/v1.0.0-android/app-debug.apk)** • **[GitHub Repository](https://github.com/AsutoshMishra-Engineer/Team-Space)**
+**[🌐 Live Production Website](https://teamspace204.asutoshm359.workers.dev)** • **[📱 Download Android App (.apk)](https://github.com/AsutoshMishra-Engineer/Team-Space/releases/download/v1.0.1-android/app-debug.apk)** • **[📦 All Releases](https://github.com/AsutoshMishra-Engineer/Team-Space/releases)**
 
 </div>
 
@@ -24,64 +22,92 @@
 
 ## 📖 Overview
 
-**TeamSpace** is an all-in-one collaborative workspace engineered to streamline team execution. It consolidates team messaging, multi-format media repositories, compulsory-deadline announcements with mandatory sign-offs, a 6-state agile task management pipeline, leader-governed attendance and contribution auditing, and a dedicated Groq AI Work Studio into a single fast, responsive, and secure Progressive Web Application (PWA).
+**TeamSpace** is an all-in-one collaborative workspace engineered to streamline team execution. It consolidates team messaging, multi-format media repositories, compulsory-deadline announcements with mandatory sign-offs, a 6-state agile task management pipeline, leader-governed attendance and contribution auditing, a social-media style media inspection lightbox, and a dedicated AI Work Studio into a single fast, responsive, and secure Progressive Web Application (PWA) alongside an official Native Android App.
 
-Deployed globally on **Cloudflare Workers Edge Network**, backed by **Supabase PostgreSQL with strict Row Level Security (RLS)**, and accelerated by **Groq LPU reasoning models**.
+Deployed globally on the **Cloudflare Workers Edge Network**, backed by **Supabase PostgreSQL with strict Row Level Security (RLS)**, and delivered to mobile devices via **Google Firebase Cloud Messaging (FCM)** and **W3C Web Push**.
 
 ---
 
-## ✨ Enterprise Feature Highlights
+## 🔗 Quick Links & Downloads
+
+| Platform | Access Link | Description |
+| :--- | :--- | :--- |
+| **Production Web App** | [teamspace204.asutoshm359.workers.dev](https://teamspace204.asutoshm359.workers.dev) | Globally accelerated PWA on Cloudflare Workers edge network |
+| **Android APK (Direct)** | [Download v1.0.1 APK (6.4 MB)](https://github.com/AsutoshMishra-Engineer/Team-Space/releases/download/v1.0.1-android/app-debug.apk) | Standalone Android package with background push notifications & file uploads |
+| **GitHub Releases** | [Releases & Changelogs](https://github.com/AsutoshMishra-Engineer/Team-Space/releases) | Full build history, release assets, and release summaries |
+| **GitHub Source Code** | [GitHub Repository](https://github.com/AsutoshMishra-Engineer/Team-Space) | Complete open codebase for Web and Android apps |
+
+---
+
+## ✨ Core Feature Highlights
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                             TEAMSPACE ECOSYSTEM                             │
 ├──────────────────────┬──────────────────────┬───────────────────────────────┤
-│ 📢 Announcements     │ 📋 Smart Tasks       │ ⚡ Groq AI Work Studio         │
+│ 📢 Announcements     │ 📋 Smart Tasks       │ ⚡ AI Work Studio             │
 │ • Mandatory Sign-Off │ • 6-State Lifecycle  │ • Full-Screen Single Page     │
 │ • Push Reminders     │ • DoD Checklists     │ • Zero-Token Work Guardrail   │
 │ • Leader Audit Table │ • Leader Review/Req  │ • Code & Schema Synthesis     │
 ├──────────────────────┼──────────────────────┼───────────────────────────────┤
-│ 👥 Attendance & Work │ 🔔 Android Web Push  │ 📁 Rich Media Vault           │
-│ • Leader-Exclusive   │ • Multi-Device VAPID │ • In-Browser Media Previews   │
-│ • Verified Notes     │ • Auto Token Sync    │ • Cloudinary Storage          │
-│ • Monthly Analytics  │ • Heads-Up Vibration │ • Role-Based Access           │
+│ 👥 Attendance & Work │ 🔔 WhatsApp-Style    │ 📁 Drive & Media Lightbox     │
+│ • Leader-Exclusive   │ • Real Sender Names  │ • In-Browser Social Preview   │
+│ • Verified Notes     │ • Closed-App Delivery│ • Photos, Videos, Audio, PDFs │
+│ • Monthly Analytics  │ • High-Priority Vibe │ • Inspect Before Download     │
 └──────────────────────┴──────────────────────┴───────────────────────────────┘
 ```
 
-### 1. 🔔 Reliable Android Push Notifications (Web Push API)
-* **Standards-Based Web Push:** Built on the W3C Push API and Service Workers (`public/sw.js`), delivering notifications even when the browser or PWA is closed.
-* **Auto-Subscription Background Sync:** User devices automatically register and synchronize ECDH P-256 VAPID subscriptions in the database upon authentication.
-* **Edge Notification Dispatcher:** Cloudflare Worker backend API (`/api/send-push`) formats high-priority payloads with custom vibration sequences, badge icons, and announcement deep-linking.
-* **Multi-Device Support:** Tracks multiple devices per user with automatic stale-token pruning.
-* **Notification Preferences:** Fine-grained member toggles for Announcements, Tasks, Deadline Reminders, and Meeting Alerts.
+### 1. 👤 Compulsory Member Identity & Real Names
+* **Non-Dismissible Setup Modal:** Automatically detects any member without a verified name or whose name is set to a raw user ID (e.g., `981EF23`), gating access until a real display name is provided.
+* **Live Initials Avatar Generator:** Dynamically renders real-time circular avatar previews based on typed names (e.g. `AM` for *Asutosh Mishra*).
+* **Live Notification Preview Card:** Displays a live WhatsApp / Android notification tray mockup showing members exactly how their announcements and messages will appear on teammates' phones.
+* **Compulsory Signup Registration:** All new member sign-ups require full names upfront, immediately populating the user profile upon email verification.
+* **Self-Service Updates:** Members can change their display name anytime in **Preferences → Account Details**.
 
-### 2. 📢 Announcement Acknowledgement & Sign-Off System
+### 2. 🔔 WhatsApp & Instagram-Style Push Notification Architecture
+* **Real Sender Name Headers:** System notifications display the author's real name instead of raw IDs or generic placeholders:
+  * **Announcements:** `📢 Asutosh Mishra • TeamSpace` with message body.
+  * **Team Chat:** `💬 Asutosh Mishra • TeamSpace` with chat message text.
+  * **Task Assignments:** `📋 Asutosh Mishra • TeamSpace` with task title, priority, and deadline.
+  * **Review Submissions:** `👀 Asutosh Mishra • TeamSpace` with review status.
+  * **Attendance Logs:** `⏱️ Asutosh Mishra • TeamSpace` with verified session title.
+* **Closed-Browser Background Delivery:** Runs on Google Firebase Cloud Messaging (FCM) and Cloudflare Workers (`/api/send-push`), alerting members even when the browser or Android app is completely closed.
+* **Android Notification Channels:** High-priority channel with custom vibration sequences (`[0, 300, 200, 300]`), heads-up alerts, and lock-screen display.
+
+### 3. 📁 Social-Media Style File & Media Preview Lightbox
+* **Inspect Before Downloading:** Eliminates blind downloads by allowing users to preview, read, watch, or listen to files directly in the browser or APK.
+* **Photos & Images:** Full-resolution lightbox with zoom, uploader badge, upload date, and responsive file grid thumbnails.
+* **Videos:** Native HTML5 video player with playback scrub bar, volume, and full-screen controls.
+* **PDF Documents:** Embedded PDF viewer with page inspection, combined with a Google Docs Viewer embed and a direct `↗️ Open in New Tab` button.
+* **Audio & Voice Notes:** Audio card with playback controls and track duration.
+* **Code & Text Files (`.js`, `.py`, `.sql`, `.json`, `.txt`, `.md`):** Syntax-formatted code reader with line numbers and a 1-click `📋 Copy All` button.
+
+### 4. 📢 Announcement Acknowledgement & Sign-Off System
 * **Compulsory Deadlines & Priorities:** Every announcement requires an actionable deadline with options for *Normal*, *Important*, or *Mandatory Acknowledgement*.
-* **Member Sign-Off Interface:** Clear, prominent acknowledgment button recording exact timestamps and member IDs to prevent dispute.
+* **Member Sign-Off Interface:** Clear acknowledgment button recording exact timestamps and member IDs to prevent disputes.
 * **Leader Audit Dashboard:** Real-time sign-off progress bars, member-wise status tables (*Acknowledged* vs *Pending* with timestamps), and a 1-click **"Send Push Reminder to Pending Members"** action.
 
-### 3. 📋 Smart Task Management System (6-State Agile Pipeline)
+### 5. 📋 Smart Task Management System (6-State Agile Pipeline)
 * **6-State Engineering Workflow:**
   $$\text{Assigned} \longrightarrow \text{Accepted} \longrightarrow \text{In Progress} \longrightarrow \text{Review Pending} \longrightarrow \begin{cases} \text{Completed} \\ \text{Changes Requested} \end{cases}$$
 * **Definition of Done (DoD):** Interactive checklist items required before work can be submitted for review.
-* **Submission & Review Cycle:** Members submit deliverable notes and repository/preview links; team leaders review, approve, or reject with actionable feedback.
+* **Submission & Review Cycle:** Members submit deliverable notes and repository links; team leaders review, approve, or reject with actionable feedback.
 * **Priority & Deadline Alerts:** Automated visual cues for Overdue, Critical, and Approaching milestones.
 
-### 4. 👥 Leader-Exclusive Attendance & Contribution Tracking
+### 6. 👥 Leader-Exclusive Attendance & Contribution Tracking
 * **Strict Role Enforcement:** Exclusively team leaders can log, verify, or modify daily attendance records.
-* **Operational Statuses:** `Present`, `Absent`, `Half Day`, `Remote`.
-* **Contribution & Task Notes:** Leaders log daily deliverables and tag records as `Verified`.
+* **Operational Statuses:** `Present` (1.0), `Partial Contribution` (0.5), `Absent` (0.0), `Excused / Leave`.
+* **Contribution & Task Notes:** Leaders log daily deliverables and tag records as verified.
 * **Audit Trail & Analytics:** Automatic logging of who marked and modified attendance, accompanied by monthly attendance percentage summaries and date filters.
 
-### 5. ⚡ Dedicated Groq AI Work Studio (`/workspace/ai`)
-* **Single-Page Viewport Layout:** Matches modern conversational AI tools (like ChatGPT and Gemini) with `100vh` zero outer-scroll design, smooth internal message stream scrolling, and a pinned bottom input console.
-* **LPU Hardware Speed:** Powered by `openai/gpt-oss-120b` running on Groq LPU hardware with automatic fallback to `qwen/qwen3.8-27b` and `openai/gpt-oss-20b`.
-* **Zero-Token Client Guardrail:** Intercepts casual, personal, or entertainment queries client-side before touching the network, preserving 100% of API tokens and returning an instant workplace refocus reminder.
+### 7. ⚡ TeamSpace AI Work Studio (`/workspace/ai`)
+* **Single-Page Viewport Layout:** Matches modern conversational AI tools with `100vh` zero outer-scroll design, smooth internal message stream scrolling, and a pinned bottom input console.
+* **Zero-Token Client Guardrail:** Intercepts casual or entertainment queries client-side before touching the network, preserving 100% of API tokens and returning an instant workplace refocus reminder.
 * **Enterprise Work Culture:** Trained specifically for code refactoring, PostgreSQL RLS schema generation, 6-state task breakdowns, incident postmortems, and executive team communications.
 * **Export & Tools:** 1-click Markdown (`.md`) export, session reset, and copyable syntax-highlighted code blocks.
 
-### 6. 🌐 Dashboard Web Search
-* Dedicated Google Search bar integrated directly into the Dashboard (`/workspace`) for external web research, technical documentation lookup, and public browsing.
+### 8. 🌐 Integrated Dashboard Google Search
+* Dedicated Google Search bar integrated directly into the Dashboard (`/workspace`) for rapid technical documentation lookup, web research, and external reference without leaving the app layout.
 
 ---
 
@@ -89,145 +115,107 @@ Deployed globally on **Cloudflare Workers Edge Network**, backed by **Supabase P
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Frontend Framework** | React 18.3 + Vite 6.4 | Modern, fast component architecture and bundling |
-| **Edge Compute & Host**| Cloudflare Workers + Static Assets | Global serverless edge routing, push dispatch & static hosting |
-| **Database & Auth** | Supabase (PostgreSQL 15) | Relational database, Auth, RPC functions & Row Level Security |
+| **Frontend Framework** | React 18.3 + Vite 6.4 | Fast component architecture, JSX rendering, and dev server |
+| **Performance** | React.lazy() + Rollup manualChunks | Route-level code splitting (`LandingPage` 4.8 kB, `LoginPage` 6.2 kB) |
+| **Edge Compute & Host** | Cloudflare Workers + Static Assets | Serverless edge API routing, push dispatch & single-page app hosting |
+| **Database & Auth** | Supabase (PostgreSQL 15) | Relational storage, Auth, RPC functions & strict Row Level Security |
 | **Realtime Engine** | Supabase Realtime | WebSocket channels for live team chat and status broadcasts |
-| **Media Cloud** | Cloudinary | Encrypted upload, storage, and in-browser preview of files |
-| **AI Intelligence** | Groq API (LPU Inference Engine) | High-speed LLM reasoning for engineering and code workflows |
-| **Push Protocol** | Web Push API + VAPID (RFC 8291/8292) | Background Android and desktop push notification delivery |
-| **Security Architecture**| F-204 IT Cell Protocol + RLS | Least-privilege data isolation and strict input sanitization |
+| **Media Cloud Storage** | Cloudinary / Supabase Storage | Encrypted upload, storage, and in-browser preview of files |
+| **Push Notification Protocol** | Web Push API + VAPID (RFC 8291/8292) | Closed-browser Android and desktop push notification delivery |
+| **Native Android Wrapper** | Kotlin, Android SDK 34 (minSdk 26) | Native WebView wrapper, FCM service, notification channels, file picker |
+| **Styling & Design System** | Pure Vanilla CSS (CSS3 Variables) | Zero heavy UI frameworks, 7 Accent themes, 7 Background atmospheric themes |
 
 ---
 
-## 📂 Project Structure
+## 📱 Native Android App Architecture
+
+The repository includes a production-ready Android wrapper located in the [`android/`](android/) directory:
+
+* **Package ID:** `com.teamspace.app`
+* **Target SDK:** Android 14 (API 34) • **Minimum SDK:** Android 8.0 Oreo (API 26)
+* **Custom WebView Engine ([`MainActivity.kt`](android/app/src/main/java/com/teamspace/app/MainActivity.kt)):**
+  * `textZoom = 100` & `useWideViewPort = false` to eliminate font collision caused by Android system accessibility scaling.
+  * WebChromeClient with `onShowFileChooser` enabling native Android file selection for drive uploads.
+  * Swipe-to-refresh (`SwipeRefreshLayout`) and hardware back-button history navigation.
+* **Background FCM Service ([`MyFirebaseMessagingService.kt`](android/app/src/main/java/com/teamspace/app/MyFirebaseMessagingService.kt)):**
+  * Intercepts data and notification payloads from Cloudflare Workers.
+  * Builds high-priority heads-up notifications with vibration patterns (`longArrayOf(0, 300, 200, 300)`).
+  * Auto-caches registration tokens and bridges them to the web layer via `TeamSpaceNative.getNativeFcmToken()`.
+* **Automated CI/CD Compilation ([`.github/workflows/build-apk.yml`](.github/workflows/build-apk.yml)):**
+  * Builds unsigned debug APKs on GitHub Actions runners with Gradle 8.2 and JDK 17.
+  * Automatically uploads build artifacts and publishes official GitHub Releases.
+
+---
+
+## 📂 Project Directory Structure
 
 ```
-Team-Space/
+├── android/                             # Native Android App (Kotlin + Gradle)
+│   ├── app/
+│   │   ├── src/main/
+│   │   │   ├── java/com/teamspace/app/
+│   │   │   │   ├── MainActivity.kt      # WebView controller & JS interface bridge
+│   │   │   │   └── MyFirebaseMessagingService.kt # FCM background notification service
+│   │   │   ├── res/                     # Icons, drawables, layouts, and colors
+│   │   │   └── AndroidManifest.xml      # App permissions, intents & FCM declaration
+│   │   └── build.gradle.kts             # App dependencies & SDK versions
+│   ├── gradle/wrapper/                  # Official Gradle 8.2 wrapper binaries
+│   └── build.gradle.kts                 # Project-level Gradle build configuration
+│
 ├── public/
-│   ├── logo.png               # Official brand identity & app icon
-│   ├── manifest.json          # PWA configuration manifest
-│   └── sw.js                  # Service Worker (Web Push & notification click handler)
+│   ├── logo.png                         # TeamSpace brand icon (512x512)
+│   ├── sw.js                            # PWA Service Worker for Web Push
+│   └── manifest.json                    # Web App Manifest for mobile installation
+│
 ├── src/
-│   ├── components/
-│   │   ├── AnnouncementAcknowledgement.jsx # Leader audit table & member sign-off
-│   │   ├── Announcements.jsx               # Announcements feed & deadline extenders
-│   │   ├── GoogleSearchBar.jsx             # Clean Google search bar for dashboard
-│   │   ├── Layout.jsx                      # App shell, navbar & auto-push token sync
-│   │   ├── ManageMembers.jsx               # Leader member management & roles
-│   │   ├── NetworkStatus.jsx               # Offline/online indicator banner
-│   │   ├── NotificationPreferences.jsx     # Push category toggles
-│   │   ├── PersonalSettings.jsx            # Dark themes & user profile settings
-│   │   ├── PersonalTodos.jsx               # 5-task priority focus tracker
-│   │   ├── ProtectedRoute.jsx              # Auth guard for workspace routes
-│   │   ├── SharedFiles.jsx                 # Multi-format media vault with previews
-│   │   ├── SmartTasks.jsx                  # 6-state agile task management pipeline
-│   │   ├── TeamChat.jsx                    # Real-time WebSocket messaging
-│   │   ├── TeamInfoBar.jsx                 # Team code, member counts & quick actions
-│   │   └── WorkAttendance.jsx              # Leader-exclusive attendance tracking
+│   ├── components/                      # Modular UI Components
+│   │   ├── CompulsoryNameModal.jsx      # Non-dismissible verified member name setup
+│   │   ├── Announcements.jsx            # Announcements feed, priorities & sound chimes
+│   │   ├── AnnouncementAcknowledgement.jsx # Member sign-offs & leader audit table
+│   │   ├── TeamChat.jsx                 # Real-time WebSocket team chat with push dispatch
+│   │   ├── SmartTasks.jsx               # 6-state agile task workflow & DoD checklist
+│   │   ├── SharedFiles.jsx              # Cloud drive with social-media media preview lightbox
+│   │   ├── WorkAttendance.jsx           # Leader attendance & contribution logging
+│   │   ├── PersonalTodos.jsx            # Private personal task list with deadlines
+│   │   ├── PersonalSettings.jsx         # 7 Accent themes, 7 Background themes & name editor
+│   │   ├── GoogleSearchBar.jsx          # Dashboard Google web search bar
+│   │   ├── NotificationPreferences.jsx  # Web Push subscription manager & diagnostic test
+│   │   └── Layout.jsx                   # Global app navbar, network status & footer
+│   │
 │   ├── context/
-│   │   └── AuthContext.jsx                 # Supabase session & user profile state
+│   │   └── AuthContext.jsx              # Supabase session, profile & theme state
 │   ├── lib/
-│   │   ├── groqService.js                  # Groq API client, model fallback & work guardrail
-│   │   ├── pushService.js                  # VAPID registration, token sync & permissions
-│   │   └── supabase.js                     # Supabase client initialization
-│   ├── pages/
-│   │   ├── AIStudioPage.jsx                # Dedicated full-screen Groq AI workspace
-│   │   ├── AuthCallbackPage.jsx            # OAuth and magic link callback handler
-│   │   ├── CreateTeamPage.jsx              # Team generation flow
-│   │   ├── JoinTeamPage.jsx                # 7-character invite code entry
-│   │   ├── LandingPage.jsx                 # Product showcase & feature highlights
-│   │   ├── LoginPage.jsx                   # User authentication & ID recovery
-│   │   ├── MyTeamsPage.jsx                 # Main user dashboard with Google search
-│   │   ├── RegisterPage.jsx                # Account creation
-│   │   └── TeamWorkspacePage.jsx           # Main team collaboration command center
-│   ├── worker-shim.js                      # Cloudflare Worker edge API router & push endpoint
-│   ├── App.jsx                             # Router & global error boundary
-│   ├── index.css                           # Unified CSS architecture (7 themes + responsive)
-│   └── main.jsx                            # React entry point
-├── supabase/                               # Database migrations & RLS policies
-│   ├── add-acknowledgements.sql            # Schema for announcement acknowledgements
-│   ├── add-smart-tasks.sql                 # Schema for 6-state tasks & DoD
-│   ├── add-work-attendance.sql             # Schema for leader-exclusive attendance
-│   ├── update-push-subscriptions.sql       # Schema for Web Push tokens
-│   └── production-upgrade-complete.sql     # Consolidated idempotent database migration
-├── wrangler.jsonc                          # Cloudflare Workers deployment config
-├── vite.config.js                          # Vite build pipeline
-└── package.json                            # Dependencies & scripts
-```
-
----
-
-## 🗄️ Database Schema & Security (Supabase PostgreSQL)
-
-TeamSpace enforces strict **Row Level Security (RLS)** across all tables. Unauthenticated access is blocked, and members can only access teams they belong to.
-
-```mermaid
-erDiagram
-    USERS ||--o{ TEAM_MEMBERS : "belongs to"
-    TEAMS ||--o{ TEAM_MEMBERS : "has"
-    TEAMS ||--o{ ANNOUNCEMENTS : "publishes"
-    ANNOUNCEMENTS ||--o{ ANNOUNCEMENT_ACKS : "tracked by"
-    TEAMS ||--o{ SMART_TASKS : "manages"
-    TEAMS ||--o{ WORK_ATTENDANCE : "audits"
-    USERS ||--o{ PUSH_SUBSCRIPTIONS : "registers"
-    TEAMS ||--o{ MESSAGES : "contains"
-    TEAMS ||--o{ SHARED_FILES : "stores"
-
-    USERS {
-        uuid id PK
-        string email
-        string username
-        string user_id "Unique 7-char public ID"
-        string avatar_url
-    }
-    TEAMS {
-        uuid id PK
-        string name
-        string join_code "Unique 7-char invite code"
-        uuid created_by FK
-    }
-    ANNOUNCEMENTS {
-        uuid id PK
-        uuid team_id FK
-        string title
-        text content
-        timestamp deadline
-        boolean acknowledgement_required
-    }
-    ANNOUNCEMENT_ACKS {
-        uuid id PK
-        uuid announcement_id FK
-        uuid user_id FK
-        timestamp acknowledged_at
-    }
-    SMART_TASKS {
-        uuid id PK
-        uuid team_id FK
-        string title
-        string status "Assigned|Accepted|In Progress|Review Pending|Completed|Changes Requested"
-        string priority "Low|Medium|High|Critical"
-        jsonb dod_checklist
-        uuid assigned_to FK
-    }
-    WORK_ATTENDANCE {
-        uuid id PK
-        uuid team_id FK
-        uuid user_id FK
-        date date
-        string status "Present|Absent|Half Day|Remote"
-        text contribution_notes
-        boolean is_verified
-        uuid verified_by FK
-    }
-    PUSH_SUBSCRIPTIONS {
-        uuid id PK
-        uuid user_id FK
-        string endpoint
-        string p256dh
-        string auth
-        timestamp last_seen_at
-    }
+│   │   ├── supabase.js                  # Supabase client singleton
+│   │   ├── pushService.js               # Web Push VAPID registration & Cloudflare dispatch
+│   │   └── groqService.js               # AI inference client with work-only guardrail
+│   ├── pages/                           # Route Pages (Lazy-loaded via React.lazy)
+│   │   ├── LandingPage.jsx              # Public landing page with APK download link
+│   │   ├── LoginPage.jsx                # Multi-mode login (User ID / Email)
+│   │   ├── RegisterPage.jsx             # Compulsory name + email account registration
+│   │   ├── AuthCallbackPage.jsx         # PKCE email verification & User ID display
+│   │   ├── MyTeamsPage.jsx              # Dashboard listing user teams & Google search
+│   │   ├── TeamWorkspacePage.jsx        # Team workspace tabs (Feed, Tasks, Attendance, Files)
+│   │   ├── CreateTeamPage.jsx           # Team creation with auto-generated invite codes
+│   │   ├── JoinTeamPage.jsx             # Team joining by 6-digit code or request
+│   │   └── AIStudioPage.jsx             # Dedicated AI Work Studio workspace
+│   │
+│   ├── App.jsx                          # Route definitions, Suspense & ErrorBoundary
+│   ├── index.css                        # 6,000+ lines of responsive mobile-first CSS
+│   ├── main.jsx                         # React root entry & Notification polyfill
+│   └── worker-shim.js                   # Cloudflare Worker backend API (/api/send-push)
+│
+├── supabase/                            # PostgreSQL Database Schemas & Migrations
+│   ├── schema.sql                       # Complete table schemas, RLS policies & triggers
+│   ├── add-profile-fields.sql           # Username, display name & avatar migrations
+│   ├── add-work-attendance.sql          # Attendance sessions & audit logging tables
+│   ├── add-acknowledgements.sql         # Announcement sign-off tables & RPC functions
+│   └── fix-relationships.sql            # Foreign key relations for profiles join queries
+│
+├── .github/workflows/
+│   └── build-apk.yml                    # Automated GitHub Actions workflow for APK builds
+├── wrangler.jsonc                       # Cloudflare Workers deployment configuration
+├── vite.config.js                       # Vite configuration with Rollup code-splitting chunks
+└── package.json                         # Node dependencies and build scripts
 ```
 
 ---
@@ -235,74 +223,67 @@ erDiagram
 ## 🚀 Local Development Setup
 
 ### Prerequisites
-- Node.js 18+ installed
-- Supabase project with database migrations applied
-- Cloudinary account for file storage
-- Groq Cloud API key for the AI engine
+* **Node.js:** v18.0.0 or higher
+* **npm:** v9.0.0 or higher
+* **Supabase Account:** Free project with PostgreSQL database
 
-### 1. Clone & Install
+### 1. Clone Repository
 ```bash
 git clone https://github.com/AsutoshMishra-Engineer/Team-Space.git
 cd Team-Space
+```
+
+### 2. Install Dependencies
+```bash
 npm install
 ```
 
-### 2. Configure Environment Variables
+### 3. Environment Configuration
 Create a `.env` file in the root directory:
 ```env
-VITE_SUPABASE_URL=https://your-supabase-project.supabase.co
+# Supabase Configuration
+VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
-VITE_CLOUDINARY_CLOUD_NAME=your-cloudinary-name
+
+# VAPID Web Push Key
+VITE_VAPID_PUBLIC_KEY=your-public-vapid-key
+
+# AI Engine Key (Optional)
+VITE_GROQ_API_KEY=your-ai-api-key
+
+# Cloudinary Storage (Optional)
+VITE_CLOUDINARY_CLOUD_NAME=your-cloud-name
 VITE_CLOUDINARY_UPLOAD_PRESET=your-upload-preset
-VITE_GROQ_API_KEY=your-groq-api-key
-VITE_VAPID_PUBLIC_KEY=your-vapid-public-key
-VAPID_PRIVATE_KEY=your-vapid-private-key
-VAPID_SUBJECT=mailto:admin@teamspace.com
 ```
 
-### 3. Run Database Migrations
-Execute [`supabase/production-upgrade-complete.sql`](supabase/production-upgrade-complete.sql) in your Supabase SQL Editor.
-
-### 4. Start Development Server
+### 4. Run Development Server
 ```bash
 npm run dev
 ```
-Open `http://localhost:5173` in your browser.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
----
-
-## 🌐 Production Deployment (Cloudflare Workers)
-
-TeamSpace builds as a static asset bundle paired with an edge Worker router for server-side push execution.
-
+### 5. Production Build
 ```bash
-# 1. Build optimized production bundle
 npm run build
+```
 
-# 2. Deploy directly to Cloudflare edge network
-npx wrangler deploy
+### 6. Deploy to Cloudflare Workers
+```bash
+npm run deploy
+# or: npx wrangler deploy
 ```
 
 ---
 
 ## 🛡️ Security & Privacy Architecture
 
-* **F-204 IT Cell Protected:** Zero-trust architecture where all client actions are validated server-side.
-* **Row Level Security (RLS):** Every query executed against Supabase verifies authenticated identity against `team_members`.
-* **Zero Secret Leakage:** Privileged credentials (VAPID private keys, Supabase service roles) are strictly isolated from client-side bundles.
-* **Zero-Token Guardrail:** Client-side regex protection rejects personal/casual queries before hitting external AI APIs, eliminating unnecessary token consumption.
-* **DDoS & Bot Mitigation:** Fronted by Cloudflare's global edge network with automatic TLS encryption and bot protection.
+* **Database Row Level Security (RLS):** Every table in Supabase (`team_members`, `announcements`, `chat_messages`, `team_tasks`, `work_attendance_records`, `team_files`) is protected by strict PostgreSQL RLS policies ensuring users can only read and write data belonging to workspaces they are an active member of.
+* **Role-Governed Actions:** Privileged operations (announcement deletion, task approvals, attendance logging, member removal) verify `isLeader` server-side via SQL RPC functions.
+* **VAPID Cryptographic Verification:** All Web Push dispatches are signed using an ECDH P-256 keypair, preventing unauthorized push spoofing.
+* **Client-Side Work Guardrail:** Zero-token filters intercept unauthorized or casual prompts before sending requests to external intelligence gateways.
 
 ---
 
-## 👨‍💻 Author & Acknowledgements
+## 📄 License & Attribution
 
-* **Lead Architect & Developer:** Asutosh Mishra ([@AsutoshMishra-Engineer](https://github.com/AsutoshMishra-Engineer))
-* **Platform:** TeamSpace Collaborative Systems
-* **License:** [MIT License](LICENSE)
-
----
-
-<div align="center">
-  <sub>Protected under F-204 IT CELL Protocol • Built for Teams Who Build Things That Matter</sub>
-</div>
+This project is open-source and developed by [Asutosh Mishra](https://github.com/AsutoshMishra-Engineer). All rights reserved.
