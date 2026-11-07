@@ -73,6 +73,17 @@ export default function SharedFiles({ teamId, isLeader }) {
     if (teamId) fetchFiles();
   }, [teamId]);
 
+  // Keyboard shortcut: close preview on Escape
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && previewFile) {
+        setPreviewFile(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [previewFile]);
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -395,7 +406,7 @@ export default function SharedFiles({ teamId, isLeader }) {
           {filteredFiles.map((file) => {
             const cat = getFileCategory(file.file_name);
             const icon = getFileIcon(cat);
-            const uploaderName = file.profiles?.user_id || 'Teammate';
+            const uploaderName = file.profiles?.username || file.profiles?.user_id || 'Teammate';
             const uploadDate = new Date(file.created_at).toLocaleDateString([], {
               month: 'short',
               day: 'numeric',
@@ -405,14 +416,25 @@ export default function SharedFiles({ teamId, isLeader }) {
             return (
               <div key={file.id} className="pro-file-card">
                 <div className="pro-file-card-top">
-                  <div
-                    className="pro-file-badge"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleOpenPreview(file)}
-                    title="Click to preview file"
-                  >
-                    {icon}
-                  </div>
+                  {cat === 'image' && file.file_url ? (
+                    <div
+                      className="pro-file-thumb-container"
+                      onClick={() => handleOpenPreview(file)}
+                      title="Click to preview image"
+                    >
+                      <img src={file.file_url} alt={file.file_name} className="pro-file-thumb-img" loading="lazy" />
+                      <span className="pro-file-thumb-badge">👁️ Preview</span>
+                    </div>
+                  ) : (
+                    <div
+                      className="pro-file-badge"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleOpenPreview(file)}
+                      title="Click to preview file"
+                    >
+                      {icon}
+                    </div>
+                  )}
                   <div className="pro-file-tags">
                     <span className="pro-file-cat-pill">{cat.toUpperCase()}</span>
                   </div>
@@ -433,7 +455,7 @@ export default function SharedFiles({ teamId, isLeader }) {
                     <span>{uploadDate}</span>
                   </div>
                   <div className="pro-file-uploader">
-                    👤 ID: <strong>{uploaderName}</strong>
+                    👤 <strong>{uploaderName}</strong>
                   </div>
                 </div>
 
@@ -484,12 +506,22 @@ export default function SharedFiles({ teamId, isLeader }) {
                 <div>
                   <h4 className="wa-preview-filename">{previewFile.file_name}</h4>
                   <span className="wa-preview-sub">
-                    {formatSize(previewFile.file_size)} · Uploaded by ID: {previewFile.profiles?.user_id}
+                    {formatSize(previewFile.file_size)} · Uploaded by <strong>{previewFile.profiles?.username || previewFile.profiles?.user_id || 'Teammate'}</strong> on {new Date(previewFile.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
               </div>
 
               <div className="wa-preview-buttons">
+                <a
+                  href={previewFile.resolvedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-secondary btn-small"
+                  style={{ fontSize: '0.78rem', padding: '6px 12px', whiteSpace: 'nowrap' }}
+                  title="Open file directly in new tab"
+                >
+                  ↗️ Open in Tab
+                </a>
                 <button
                   onClick={() => handleDownload(previewFile)}
                   disabled={downloadingId === previewFile.id}
@@ -501,7 +533,7 @@ export default function SharedFiles({ teamId, isLeader }) {
                 <button
                   onClick={() => setPreviewFile(null)}
                   className="wa-preview-close-btn"
-                  title="Close Preview"
+                  title="Close Preview (Esc)"
                 >
                   ✕
                 </button>
@@ -510,23 +542,28 @@ export default function SharedFiles({ teamId, isLeader }) {
 
             <div className="wa-preview-viewport">
               {previewFile.category === 'image' ? (
-                <img
-                  src={previewFile.resolvedUrl}
-                  alt={previewFile.file_name}
-                  className="wa-preview-img"
-                />
+                <div className="wa-preview-image-wrapper">
+                  <img
+                    src={previewFile.resolvedUrl}
+                    alt={previewFile.file_name}
+                    className="wa-preview-img"
+                  />
+                </div>
               ) : previewFile.category === 'video' ? (
-                <video
-                  src={previewFile.resolvedUrl}
-                  controls
-                  autoPlay
-                  playsInline
-                  className="wa-preview-video"
-                />
+                <div className="wa-preview-video-wrapper">
+                  <video
+                    src={previewFile.resolvedUrl}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="wa-preview-video"
+                  />
+                </div>
               ) : previewFile.category === 'audio' ? (
                 <div className="wa-preview-audio-card">
                   <span style={{ fontSize: '3.8rem', display: 'block', marginBottom: '1rem' }}>🎵</span>
-                  <h4 style={{ color: '#fff', marginBottom: '1.25rem', fontSize: '1.05rem' }}>{previewFile.file_name}</h4>
+                  <h4 style={{ color: '#fff', marginBottom: '0.5rem', fontSize: '1.05rem' }}>{previewFile.file_name}</h4>
+                  <p style={{ color: '#94a3b8', fontSize: '0.8rem', marginBottom: '1.25rem' }}>Audio playback preview</p>
                   <audio src={previewFile.resolvedUrl} controls autoPlay style={{ width: '100%' }} />
                 </div>
               ) : previewFile.textContent !== null ? (
@@ -547,16 +584,18 @@ export default function SharedFiles({ teamId, isLeader }) {
                   <pre className="wa-preview-code-content">{previewFile.textContent}</pre>
                 </div>
               ) : previewFile.category === 'pdf' || previewFile.category === 'document' ? (
-                <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '6px 12px', background: 'rgba(0,0,0,0.5)', gap: '0.5rem', borderBottom: '1px solid var(--border)' }}>
+                <div className="wa-preview-pdf-wrapper">
+                  <div className="wa-pdf-preview-header">
+                    <span className="wa-pdf-tag">📕 Document Inspection</span>
+                    <span className="wa-pdf-note">Review document contents before downloading to your device</span>
                     <a
                       href={previewFile.resolvedUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-secondary btn-small"
-                      style={{ fontSize: '0.75rem', padding: '3px 10px' }}
+                      style={{ fontSize: '0.74rem', padding: '3px 10px' }}
                     >
-                      ↗️ Open Full Screen
+                      ↗️ Full View
                     </a>
                   </div>
                   <iframe
@@ -569,7 +608,7 @@ export default function SharedFiles({ teamId, isLeader }) {
                 <div className="wa-preview-generic">
                   <span style={{ fontSize: '3.8rem' }}>{getFileIcon(previewFile.category)}</span>
                   <h3>{previewFile.file_name}</h3>
-                  <p>{formatSize(previewFile.file_size)} · This file format cannot be displayed directly in the browser. Click below to download it to your device.</p>
+                  <p>{formatSize(previewFile.file_size)} · This file format cannot be displayed directly in the browser viewport. Click below to inspect or download it to your device.</p>
                   <button
                     onClick={() => handleDownload(previewFile)}
                     disabled={downloadingId === previewFile.id}

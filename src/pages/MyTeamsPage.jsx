@@ -4,14 +4,13 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import PersonalSettings from '../components/PersonalSettings';
 import PersonalTodos from '../components/PersonalTodos';
-import WorkspaceSearchBar from '../components/WorkspaceSearchBar';
+import GoogleSearchBar from '../components/GoogleSearchBar';
 import { PageLoader } from '../components/Spinner';
 
 export default function MyTeamsPage() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showSettings, setShowSettings] = useState(false);
@@ -38,25 +37,11 @@ export default function MyTeamsPage() {
 
   if (loading) return <PageLoader text="Loading your teams..." />;
 
-  const filteredTeams = teams.filter((t) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      t.name.toLowerCase().includes(q) ||
-      (t.project_idea && t.project_idea.toLowerCase().includes(q)) ||
-      (t.role && t.role.toLowerCase().includes(q))
-    );
-  });
-
   return (
     <div>
-      {/* TeamSpace Native Workspace Command Bar */}
+      {/* Google Web Search Bar */}
       <div className="dashboard-search-container">
-        <WorkspaceSearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          onOpenSettings={() => setShowSettings(true)}
-        />
+        <GoogleSearchBar />
       </div>
 
       {/* Personal Quote */}
@@ -86,23 +71,9 @@ export default function MyTeamsPage() {
           <div className="empty-state-text">No teams yet</div>
           <p className="text-muted">Create a team or join one to get started</p>
         </div>
-      ) : filteredTeams.length === 0 ? (
-        <div className="empty-state" style={{ padding: '2rem 1rem' }}>
-          <div className="empty-state-icon">🔍</div>
-          <div className="empty-state-text">No matching workspaces found</div>
-          <p className="text-muted" style={{ marginBottom: '1rem' }}>
-            No team matches "{searchQuery}". Check your spelling or clear the filter.
-          </p>
-          <button
-            onClick={() => setSearchQuery('')}
-            className="btn btn-secondary btn-small"
-          >
-            Clear Filter
-          </button>
-        </div>
       ) : (
         <div className="teams-grid">
-          {filteredTeams.map((t) => (
+          {teams.map((t) => (
             <div
               key={t.id}
               className="team-card"
