@@ -34,7 +34,7 @@ jobs:
       - name: 🔨 Compile Android APK
         run: |
           cd android
-          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee ../gradle-build.log
+          gradle assembleDebug --no-daemon --stacktrace 2>&1 | tee ../gradle-build.log || (echo "### ❌ Build Failure Details" >> $GITHUB_STEP_SUMMARY && echo '```' >> $GITHUB_STEP_SUMMARY && tail -n 100 ../gradle-build.log >> $GITHUB_STEP_SUMMARY && echo '```' >> $GITHUB_STEP_SUMMARY && exit 1)
 
       - name: 📝 Upload Build Output Log
         if: always()
