@@ -101,6 +101,23 @@ export async function syncPushSubscriptionWithDatabase(userId, teamId = null) {
       targetTeams = [{ team_id: null }];
     }
 
+    // Check if running inside native TeamSpace Android App wrapper
+    const nativeFcmToken = (typeof window !== 'undefined' && window.TeamSpaceNative?.getNativeFcmToken?.()) || window.__TEAMSPACE_NATIVE_FCM_TOKEN__;
+    if (nativeFcmToken) {
+      for (const t of targetTeams) {
+        if (!t.team_id) continue;
+        await supabase.from('user_push_subscriptions').upsert({
+          user_id: userId,
+          team_id: t.team_id,
+          subscription: { fcm_token: nativeFcmToken },
+          endpoint: `https://fcm.googleapis.com/fcm/send/${nativeFcmToken}`,
+          device_type: 'android_native',
+          user_agent: 'TeamSpaceNativeApp/1.0',
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,team_id,endpoint' }).catch(() => {});
+      }
+    }
+
     for (const t of targetTeams) {
       if (!t.team_id) continue;
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "987477920010",
+    "project_id": "teamspace-6c6e6",
+    "storage_bucket": "teamspace-6c6e6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987477920010:android:5aba8e7edbf69e952f92f3",
+        "android_client_info": {
+          "package_name": "com.teamspace.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSjU5SBi-4JXcZyyOOWx2RLq4A-HETcrk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
