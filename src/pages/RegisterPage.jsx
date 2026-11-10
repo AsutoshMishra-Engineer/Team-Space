@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { validateDisplayName } from '../components/CompulsoryNameModal';
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
@@ -23,8 +24,9 @@ export default function RegisterPage() {
     setError('');
 
     const cleanName = fullName.trim();
-    if (cleanName.length < 2) {
-      setError('Please enter your full name (minimum 2 characters).');
+    const nameError = validateDisplayName(cleanName, { email });
+    if (nameError) {
+      setError(nameError);
       return;
     }
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import NotificationPreferences from './NotificationPreferences';
+import { validateDisplayName } from './CompulsoryNameModal';
 
 const COLOR_OPTIONS = [
   { name: 'Indigo', swatch: '#6C63FF', label: 'Indigo' },
@@ -39,12 +40,9 @@ export default function PersonalSettings({ onClose }) {
   const handleUpdateName = async (e) => {
     e?.preventDefault();
     const cleanName = editableName.trim();
-    if (cleanName.length < 2) {
-      setNameError('Name must be at least 2 characters.');
-      return;
-    }
-    if (profile?.user_id && cleanName.toLowerCase() === profile.user_id.toLowerCase()) {
-      setNameError('Please enter your actual name rather than your User ID.');
+    const validationError = validateDisplayName(cleanName, profile);
+    if (validationError) {
+      setNameError(validationError);
       return;
     }
 

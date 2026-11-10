@@ -547,7 +547,7 @@ export default function WorkAttendance({ teamId, teamName, isLeader, members = [
                     <div key={log.id} className="audit-log-item">
                       <div className="audit-log-top">
                         <span style={{ fontWeight: 600, color: '#e2e8f0' }}>
-                          Changed by: {log.changed_by_profile?.username || 'Team Leader'}
+                          Changed by: {log.changed_by_profile?.username || log.changed_by_profile?.user_id || 'Team Leader'}
                         </span>
                         <span style={{ fontSize: '0.74rem', color: '#8888aa' }}>
                           {new Date(log.created_at).toLocaleString()}

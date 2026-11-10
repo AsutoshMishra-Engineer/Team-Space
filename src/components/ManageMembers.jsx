@@ -238,7 +238,8 @@ export default function ManageMembers({ teamId, members, onClose, onMembersChang
               {members.map((m) => {
                 const isLead = m.role === 'leader';
                 const isPending = m.status === 'pending';
-                const displayId = m.profiles?.user_id || 'Unknown ID';
+                const userId = m.profiles?.user_id || 'Unknown ID';
+                const displayName = m.profiles?.username?.trim() || userId;
                 const currentRole = m.member_role || localRoles[m.user_id] || (isPending ? 'Pending' : isLead ? 'Team Leader' : 'Member');
 
                 return (
@@ -251,7 +252,7 @@ export default function ManageMembers({ teamId, members, onClose, onMembersChang
 
                     <div className="pro-member-info">
                       <div className="pro-member-id-row" style={{ flexWrap: 'wrap', gap: '6px' }}>
-                        <span className="pro-member-user-id">{displayId}</span>
+                        <span className="pro-member-user-id">{displayName}</span>
                         <span
                           className={`pro-badge-role ${
                             isLead ? 'badge-leader' : isPending ? 'badge-pending' : 'badge-member'
@@ -293,7 +294,7 @@ export default function ManageMembers({ teamId, members, onClose, onMembersChang
                         </div>
                       ) : (
                         <div className="pro-member-meta">
-                          {isLead ? 'Team Creator & Workspace Leader' : 'Joined via team invitation'}
+                          ID: {userId} · {isLead ? 'Team Creator & Workspace Leader' : 'Joined via team invitation'}
                         </div>
                       )}
                     </div>
@@ -321,7 +322,7 @@ export default function ManageMembers({ teamId, members, onClose, onMembersChang
 
                       {!isLead ? (
                         <button
-                          onClick={() => handleRemove(m.user_id, displayId)}
+                          onClick={() => handleRemove(m.user_id, displayName)}
                           disabled={removingId === m.user_id}
                           className="pro-btn-member-remove"
                           title="Remove from team"

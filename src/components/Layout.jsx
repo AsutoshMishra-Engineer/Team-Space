@@ -38,7 +38,9 @@ export const Layout = ({ children }) => {
         <div className="navbar-links">
           {user ? (
             <div className="navbar-user">
-              <div className="navbar-user-id">ID: {profile?.user_id}</div>
+              <div className="navbar-user-id" title={profile?.user_id ? `User ID: ${profile.user_id}` : undefined}>
+                {profile?.username?.trim() || profile?.user_id || 'Member'}
+              </div>
               <Link to="/workspace" className="btn btn-ghost btn-small">Dashboard</Link>
               <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="AI Chatbot">⚡ AI Chatbot</Link>
               <div className="navbar-avatar" title={profile?.username || 'Profile'}>

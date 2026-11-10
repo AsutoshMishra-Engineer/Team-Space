@@ -491,7 +491,7 @@ export default function Announcements({ teamId, teamName, isLeader, members = []
 
       triggerBrowserNotification({
         ...newRecord,
-        profiles: { user_id: 'You' }
+        profiles: { username: profile?.username?.trim() || 'You', user_id: 'You' }
       });
     } catch (err) {
       alert('Post failed: ' + err.message);

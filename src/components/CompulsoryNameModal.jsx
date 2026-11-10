@@ -2,24 +2,61 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
+const PLACEHOLDER_NAMES = new Set([
+  'user',
+  'team member',
+  'teammate',
+  'member',
+  'leader',
+  'team leader',
+  'unknown',
+  'anonymous',
+  'unnamed',
+  'null',
+  'undefined',
+  'n/a',
+  'na',
+  'none',
+  'admin',
+  'test'
+]);
+
 /**
- * Checks if the user has a valid, non-placeholder display name.
+ * Validates whether a candidate display name is a genuine official name.
+ * Returns null if valid, or a user-facing validation error string if invalid.
+ */
+export function validateDisplayName(rawName, profile = null) {
+  if (!rawName || typeof rawName !== 'string') {
+    return 'Please enter your official full name.';
+  }
+  const trimmed = rawName.trim();
+  if (trimmed.length < 2) {
+    return 'Please enter your full name (minimum 2 characters).';
+  }
+  if (trimmed.length > 50) {
+    return 'Name cannot exceed 50 characters.';
+  }
+  if (!/[\p{L}].*[\p{L}]/u.test(trimmed)) {
+    return 'Please enter a valid name containing letters.';
+  }
+  if (profile?.user_id && trimmed.toLowerCase() === profile.user_id.toLowerCase()) {
+    return 'Please enter your actual name rather than your User ID.';
+  }
+  if (profile?.email && trimmed.toLowerCase() === profile.email.toLowerCase()) {
+    return 'Please enter your full name instead of your email address.';
+  }
+  if (PLACEHOLDER_NAMES.has(trimmed.toLowerCase())) {
+    return 'Please enter your real first and last name.';
+  }
+  return null;
+}
+
+/**
+ * Checks if the user has a valid, non-placeholder official display name.
  */
 export function isDisplayNameMissing(profile) {
   if (!profile) return false; // wait until profile is loaded
-  const name = profile.username;
-  if (!name || typeof name !== 'string') return true;
-  const trimmed = name.trim();
-  if (trimmed.length < 2) return true;
-
-  // Check if name is just the raw User ID (e.g., "981EF23")
-  if (profile.user_id && trimmed.toLowerCase() === profile.user_id.toLowerCase()) return true;
-
-  // Check common generic placeholders
-  const placeholders = ['user', 'team member', 'member', 'unknown', 'anonymous', 'unnamed', 'null', 'undefined'];
-  if (placeholders.includes(trimmed.toLowerCase())) return true;
-
-  return false;
+  return validateDisplayName(profile.username, profile) !== null;
 }
 
 export default function CompulsoryNameModal() {
@@ -54,26 +91,9 @@ export default function CompulsoryNameModal() {
   const handleSave = async (e) => {
     e.preventDefault();
     const cleanName = fullName.trim();
-
-    if (cleanName.length < 2) {
-      setError('Please enter your full name (minimum 2 characters).');
-      return;
-    }
-
-    if (cleanName.length > 50) {
-      setError('Name cannot exceed 50 characters.');
-      return;
-    }
-
-    // Do not allow setting name to raw user_id or generic placeholder
-    if (profile?.user_id && cleanName.toLowerCase() === profile.user_id.toLowerCase()) {
-      setError('Please enter your actual name rather than your User ID.');
-      return;
-    }
-
-    const placeholders = ['user', 'team member', 'member', 'unknown', 'anonymous'];
-    if (placeholders.includes(cleanName.toLowerCase())) {
-      setError('Please enter your real first and last name.');
+    const validationError = validateDisplayName(cleanName, profile);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 

@@ -61,18 +61,19 @@ export default function TeamInfoBar({ team, members, isLeader, currentUser, onMe
               const isLead = m.role === 'leader';
               const isPend = m.status === 'pending';
               const userId = m.profiles?.user_id || 'ID: ????';
+              const displayName = m.profiles?.username?.trim() || userId;
               const assignedRole = m.member_role || localRoles[m.user_id] || (isPend ? 'Pending' : isLead ? 'Leader' : 'Member');
 
               return (
                 <div
                   key={m.id}
                   className={`pro-roster-chip ${isLead ? 'chip-leader' : isPend ? 'chip-pending' : ''}`}
-                  title={`${userId} (${assignedRole})`}
+                  title={`${displayName} • ID: ${userId} (${assignedRole})`}
                 >
                   <span className="pro-chip-avatar">
                     {isLead ? '👑' : isPend ? '⏳' : '👤'}
                   </span>
-                  <span className="pro-chip-id">{userId}</span>
+                  <span className="pro-chip-id">{displayName}</span>
                   <span className="pro-chip-role">
                     {assignedRole}
                   </span>
