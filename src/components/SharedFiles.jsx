@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-
-const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+import { getSafeExternalUrl } from '../lib/urlUtils';
 
 export default function SharedFiles({ teamId, isLeader }) {
   const { user } = useAuth();
@@ -28,7 +26,7 @@ export default function SharedFiles({ teamId, isLeader }) {
 
   const getFileCategory = (filename = '') => {
     const ext = filename.split('.').pop().toLowerCase();
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) return 'image';
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
     if (['pdf'].includes(ext)) return 'pdf';
     if (['doc', 'docx', 'txt', 'md'].includes(ext)) return 'document';
     if (['zip', 'rar', 'tar', '7z', 'gz'].includes(ext)) return 'archive';
@@ -73,16 +71,26 @@ export default function SharedFiles({ teamId, isLeader }) {
     if (teamId) fetchFiles();
   }, [teamId]);
 
-  // Keyboard shortcut: close preview on Escape
+  // Keyboard shortcut: close preview on Escape & clean up blob URLs
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && previewFile) {
+        if (previewFile.blobUrl) URL.revokeObjectURL(previewFile.blobUrl);
         setPreviewFile(null);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [previewFile]);
+
+  const closePreview = () => {
+    if (previewFile?.blobUrl) {
+      URL.revokeObjectURL(previewFile.blobUrl);
+    }
+    setPreviewFile(null);
+  };
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -96,48 +104,21 @@ export default function SharedFiles({ teamId, isLeader }) {
 
     try {
       setUploading(true);
-      setUploadProgress(0);
+      setUploadProgress(20);
 
-      let fileUrl = '';
-      let storagePath = '';
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storagePath = `${teamId}/${crypto.randomUUID()}-${safeName}`;
 
-      if (CLOUD_NAME && CLOUD_NAME !== 'YOUR_CLOUD_NAME_HERE') {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', UPLOAD_PRESET);
-        formData.append('folder', `teamspace/${teamId}`);
-
-        const xhr = new XMLHttpRequest();
-        const uploadPromise = new Promise((resolve, reject) => {
-          xhr.upload.addEventListener('progress', (event) => {
-            if (event.lengthComputable) {
-              setUploadProgress(Math.round((event.loaded / event.total) * 100));
-            }
-          });
-          xhr.addEventListener('load', () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              resolve(JSON.parse(xhr.responseText));
-            } else {
-              reject(new Error('Upload failed'));
-            }
-          });
-          xhr.addEventListener('error', () => reject(new Error('Upload failed')));
-          xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
-          xhr.send(formData);
+      setUploadProgress(50);
+      const { error: uploadError } = await supabase.storage
+        .from('team-files')
+        .upload(storagePath, file, {
+          contentType: file.type || 'application/octet-stream',
+          upsert: false
         });
 
-        const result = await uploadPromise;
-        fileUrl = result.secure_url;
-        storagePath = result.public_id;
-      } else {
-        const path = `${teamId}/${crypto.randomUUID()}-${file.name}`;
-        const { error: uploadError } = await supabase.storage
-          .from('team-files')
-          .upload(path, file);
-
-        if (uploadError) throw uploadError;
-        storagePath = path;
-      }
+      if (uploadError) throw uploadError;
+      setUploadProgress(85);
 
       const { error: dbError } = await supabase
         .from('team_files')
@@ -146,11 +127,16 @@ export default function SharedFiles({ teamId, isLeader }) {
           uploaded_by: user.id,
           file_name: file.name,
           storage_path: storagePath,
-          file_url: fileUrl,
+          file_url: '',
           file_size: file.size
         });
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        await supabase.storage.from('team-files').remove([storagePath]).catch(() => {});
+        throw dbError;
+      }
+
+      setUploadProgress(100);
       fetchFiles();
     } catch (err) {
       alert(`Upload failed: ${err.message}`);
@@ -162,7 +148,13 @@ export default function SharedFiles({ teamId, isLeader }) {
   };
 
   const getFileAccessUrl = async (fileRecord) => {
-    if (fileRecord.file_url) return fileRecord.file_url;
+    if (fileRecord.file_url) {
+      const safeLegacyUrl = getSafeExternalUrl(fileRecord.file_url);
+      if (!safeLegacyUrl) {
+        throw new Error('Blocked unsafe file URL');
+      }
+      return safeLegacyUrl;
+    }
     const { data, error } = await supabase.storage
       .from('team-files')
       .createSignedUrl(fileRecord.storage_path, 300);
@@ -223,6 +215,8 @@ export default function SharedFiles({ teamId, isLeader }) {
       const cat = getFileCategory(fileRecord.file_name);
 
       let textContent = null;
+      let blobUrl = null;
+
       // If text or code file, fetch the content so user can read/preview it inline!
       const isText = /\.(txt|md|json|js|jsx|ts|tsx|py|html|css|sql|env|csv|xml|log|yaml|yml)$/i.test(fileRecord.file_name);
       if (isText) {
@@ -237,11 +231,22 @@ export default function SharedFiles({ teamId, isLeader }) {
         } catch (e) {
           console.warn('Could not fetch text content for preview:', e);
         }
+      } else if (cat === 'pdf') {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const pdfBlob = await res.blob();
+            blobUrl = URL.createObjectURL(new Blob([pdfBlob], { type: 'application/pdf' }));
+          }
+        } catch (e) {
+          console.warn('PDF blob preview fallback:', e);
+        }
       }
 
       setPreviewFile({
         ...fileRecord,
         resolvedUrl: url,
+        blobUrl,
         category: cat,
         textContent,
         isText
@@ -497,7 +502,7 @@ export default function SharedFiles({ teamId, isLeader }) {
       {previewFile && (
         <div
           className="wa-preview-overlay"
-          onClick={(e) => e.target === e.currentTarget && setPreviewFile(null)}
+          onClick={(e) => e.target === e.currentTarget && closePreview()}
         >
           <div className="wa-preview-modal">
             <div className="wa-preview-topbar">
@@ -512,16 +517,18 @@ export default function SharedFiles({ teamId, isLeader }) {
               </div>
 
               <div className="wa-preview-buttons">
-                <a
-                  href={previewFile.resolvedUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-secondary btn-small"
-                  style={{ fontSize: '0.78rem', padding: '6px 12px', whiteSpace: 'nowrap' }}
-                  title="Open file directly in new tab"
-                >
-                  ↗️ Open in Tab
-                </a>
+                {previewFile.category !== 'other' && !/\.(svg|html?)$/i.test(previewFile.file_name) && (
+                  <a
+                    href={previewFile.resolvedUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-secondary btn-small"
+                    style={{ fontSize: '0.78rem', padding: '6px 12px', whiteSpace: 'nowrap' }}
+                    title="Open file directly in new tab"
+                  >
+                    ↗️ Open in Tab
+                  </a>
+                )}
                 <button
                   onClick={() => handleDownload(previewFile)}
                   disabled={downloadingId === previewFile.id}
@@ -531,7 +538,7 @@ export default function SharedFiles({ teamId, isLeader }) {
                   {downloadingId === previewFile.id ? '⏳ Downloading...' : '⬇️ Download'}
                 </button>
                 <button
-                  onClick={() => setPreviewFile(null)}
+                  onClick={closePreview}
                   className="wa-preview-close-btn"
                   title="Close Preview (Esc)"
                 >
@@ -583,23 +590,22 @@ export default function SharedFiles({ teamId, isLeader }) {
                   </div>
                   <pre className="wa-preview-code-content">{previewFile.textContent}</pre>
                 </div>
-              ) : previewFile.category === 'pdf' || previewFile.category === 'document' ? (
+              ) : previewFile.category === 'pdf' ? (
                 <div className="wa-preview-pdf-wrapper">
                   <div className="wa-pdf-preview-header">
-                    <span className="wa-pdf-tag">📕 Document Inspection</span>
-                    <span className="wa-pdf-note">Review document contents before downloading to your device</span>
-                    <a
-                      href={previewFile.resolvedUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <span className="wa-pdf-tag">📕 Private PDF Viewer</span>
+                    <span className="wa-pdf-note">Rendered locally — never sent to third-party viewers</span>
+                    <button
+                      type="button"
+                      onClick={() => handleDownload(previewFile)}
                       className="btn btn-secondary btn-small"
                       style={{ fontSize: '0.74rem', padding: '3px 10px' }}
                     >
-                      ↗️ Full View
-                    </a>
+                      ⬇️ Download PDF
+                    </button>
                   </div>
                   <iframe
-                    src={`https://docs.google.com/viewer?url=${encodeURIComponent(previewFile.resolvedUrl)}&embedded=true`}
+                    src={previewFile.blobUrl || previewFile.resolvedUrl}
                     title={previewFile.file_name}
                     className="wa-preview-iframe"
                   />

@@ -25,7 +25,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d(TAG, "New FCM Device Registration Token: $token")
+        Log.d(TAG, "FCM device registration token updated")
         
         // Cache token locally so MainActivity can sync it to database
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -34,7 +34,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        Log.d(TAG, "FCM Message received from: ${remoteMessage.from}")
+        Log.d(TAG, "FCM Message received")
 
         // 1. Extract notification title and body
         var title = remoteMessage.notification?.title
@@ -55,7 +55,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             body = "You have a new update in your team workspace."
         }
 
-        val targetUrl = remoteMessage.data["url"] ?: "https://teamspace204.asutoshm359.workers.dev"
+        val targetUrl = MainActivity.resolveSafeAppUrl(remoteMessage.data["url"])
 
         // 2. Display native high-priority heads-up notification
         showNotification(title, body, targetUrl)

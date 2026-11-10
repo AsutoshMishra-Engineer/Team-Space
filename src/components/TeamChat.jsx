@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { dispatchPushNotification } from '../lib/pushService';
+import { getSafeExternalUrl } from '../lib/urlUtils';
 
 export default function TeamChat({ teamId, teamName, isLeader }) {
   const { user, profile } = useAuth();
@@ -256,8 +257,8 @@ export default function TeamChat({ teamId, teamName, isLeader }) {
               >
                 {!isMe && (
                   <div className="wa-sender-avatar">
-                    {msg.profiles?.avatar_url ? (
-                      <img src={msg.profiles.avatar_url} alt={senderName} />
+                    {getSafeExternalUrl(msg.profiles?.avatar_url) ? (
+                      <img src={getSafeExternalUrl(msg.profiles.avatar_url)} alt={senderName} />
                     ) : (
                       <span>{senderName.slice(0, 2).toUpperCase()}</span>
                     )}

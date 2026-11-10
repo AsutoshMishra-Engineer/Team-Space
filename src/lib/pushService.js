@@ -1,6 +1,21 @@
 import { supabase } from './supabase';
 
-export const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || 'BKuFBD8j1g_XMZUERp_peqjjDG7goKONB5zNdMooaomsvfrTwkRj6xj611Jbul_9K68rvMLKlz8zvH2b4xDqp2k';
+let cachedVapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
+
+export async function getVapidPublicKey() {
+  try {
+    const res = await fetch('/api/push-config', { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.vapidPublicKey) {
+        cachedVapidPublicKey = data.vapidPublicKey;
+      }
+    }
+  } catch (e) {
+    // Offline fallback to build-time env var
+  }
+  return cachedVapidPublicKey;
+}
 
 export function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -22,6 +37,11 @@ export async function getOrRegisterPushSubscription() {
     return null;
   }
 
+  const vapidPublicKey = await getVapidPublicKey();
+  if (!vapidPublicKey) {
+    return null;
+  }
+
   let reg = await navigator.serviceWorker.getRegistration();
   if (!reg) {
     reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
@@ -32,10 +52,9 @@ export async function getOrRegisterPushSubscription() {
   let sub = await reg.pushManager.getSubscription();
 
   // If sub exists, verify if it was created with current VAPID key
-  // If not, unsubscribe to refresh with verified key
   if (sub) {
     try {
-      const currentKeyBytes = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+      const currentKeyBytes = urlBase64ToUint8Array(vapidPublicKey);
       const subKey = sub.options?.applicationServerKey;
       if (subKey) {
         const subKeyBytes = new Uint8Array(subKey);
@@ -62,28 +81,59 @@ export async function getOrRegisterPushSubscription() {
   if (!sub) {
     sub = await reg.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
     });
   }
 
   return sub;
 }
 
+async function persistSubscriptionForTeams(userId, targetTeams, subscriptionJson, endpoint, deviceType, userAgent) {
+  for (const t of targetTeams) {
+    if (!t.team_id) continue;
+
+    const { data: rpcRes, error: rpcErr } = await supabase.rpc('save_push_subscription', {
+      p_team_id: t.team_id,
+      p_subscription: subscriptionJson,
+      p_device_type: deviceType,
+      p_user_agent: userAgent
+    });
+
+    if (!rpcErr && rpcRes?.success) {
+      continue;
+    }
+
+    const { error } = await supabase.from('user_push_subscriptions').upsert({
+      user_id: userId,
+      team_id: t.team_id,
+      subscription: subscriptionJson,
+      endpoint: endpoint,
+      device_type: deviceType,
+      user_agent: userAgent,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id,team_id,endpoint' });
+
+    if (error) {
+      console.warn('Upsert subscription error, trying fallback insert:', error.message);
+      await supabase.from('user_push_subscriptions').insert({
+        user_id: userId,
+        team_id: t.team_id,
+        subscription: subscriptionJson,
+        endpoint: endpoint,
+        device_type: deviceType,
+        user_agent: userAgent
+      });
+    }
+  }
+}
+
 /**
- * Persists current device's Google FCM subscription into Supabase.
+ * Persists current device's subscription (Native Android FCM and/or Browser Web Push) into Supabase.
  */
 export async function syncPushSubscriptionWithDatabase(userId, teamId = null) {
   if (!userId) return false;
 
   try {
-    const sub = await getOrRegisterPushSubscription();
-    if (!sub) return false;
-
-    const subJson = sub.toJSON();
-    const endpoint = sub.endpoint || subJson.endpoint;
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    const deviceType = isAndroid ? 'android' : /Mobile/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-
     let targetTeams = [];
     if (teamId) {
       targetTeams = [{ team_id: teamId }];
@@ -97,67 +147,49 @@ export async function syncPushSubscriptionWithDatabase(userId, teamId = null) {
     }
 
     if (targetTeams.length === 0) {
-      // User might be in personal workspace or just joined
-      targetTeams = [{ team_id: null }];
+      return false;
     }
 
-    // Check if running inside native TeamSpace Android App wrapper
-    const nativeFcmToken = (typeof window !== 'undefined' && window.TeamSpaceNative?.getNativeFcmToken?.()) || window.__TEAMSPACE_NATIVE_FCM_TOKEN__;
+    let synced = false;
+
+    // 1. Sync Native Android FCM token first (works inside Android WebView even without PushManager)
+    const nativeFcmToken =
+      (typeof window !== 'undefined' && window.TeamSpaceNative?.getNativeFcmToken?.()) ||
+      (typeof window !== 'undefined' && window.__TEAMSPACE_NATIVE_FCM_TOKEN__);
+
     if (nativeFcmToken) {
-      for (const t of targetTeams) {
-        if (!t.team_id) continue;
-        await supabase.from('user_push_subscriptions').upsert({
-          user_id: userId,
-          team_id: t.team_id,
-          subscription: { fcm_token: nativeFcmToken },
-          endpoint: `https://fcm.googleapis.com/fcm/send/${nativeFcmToken}`,
-          device_type: 'android_native',
-          user_agent: 'TeamSpaceNativeApp/1.0',
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,team_id,endpoint' }).catch(() => {});
-      }
+      const nativeEndpoint = `https://fcm.googleapis.com/fcm/send/${nativeFcmToken}`;
+      await persistSubscriptionForTeams(
+        userId,
+        targetTeams,
+        { endpoint: nativeEndpoint, fcm_token: nativeFcmToken },
+        nativeEndpoint,
+        'android_native',
+        'TeamSpaceNativeApp/1.0'
+      );
+      synced = true;
     }
 
-    for (const t of targetTeams) {
-      if (!t.team_id) continue;
+    // 2. Sync Browser Web Push subscription when supported
+    const sub = await getOrRegisterPushSubscription();
+    if (sub) {
+      const subJson = sub.toJSON();
+      const endpoint = sub.endpoint || subJson.endpoint;
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const deviceType = isAndroid ? 'android' : /Mobile/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
 
-      // 1. Try secure RPC
-      const { data: rpcRes, error: rpcErr } = await supabase.rpc('save_push_subscription', {
-        p_team_id: t.team_id,
-        p_subscription: subJson,
-        p_device_type: deviceType,
-        p_user_agent: navigator.userAgent.substring(0, 150)
-      });
-
-      if (!rpcErr && rpcRes?.success) {
-        continue;
-      }
-
-      // 2. Fallback upsert
-      const { error } = await supabase.from('user_push_subscriptions').upsert({
-        user_id: userId,
-        team_id: t.team_id,
-        subscription: subJson,
-        endpoint: endpoint,
-        device_type: deviceType,
-        user_agent: navigator.userAgent.substring(0, 150),
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id,team_id,endpoint' });
-
-      if (error) {
-        console.warn('Upsert subscription error, trying fallback insert:', error.message);
-        await supabase.from('user_push_subscriptions').insert({
-          user_id: userId,
-          team_id: t.team_id,
-          subscription: subJson,
-          endpoint: endpoint,
-          device_type: deviceType,
-          user_agent: navigator.userAgent.substring(0, 150)
-        });
-      }
+      await persistSubscriptionForTeams(
+        userId,
+        targetTeams,
+        subJson,
+        endpoint,
+        deviceType,
+        navigator.userAgent.substring(0, 150)
+      );
+      synced = true;
     }
 
-    return true;
+    return synced;
   } catch (err) {
     console.warn('Push sync error:', err);
     return false;
@@ -165,43 +197,34 @@ export async function syncPushSubscriptionWithDatabase(userId, teamId = null) {
 }
 
 /**
- * Dispatches a real Web Push to Google FCM via Cloudflare Worker backend.
+ * Dispatches an authenticated Push Notification via Cloudflare Worker backend.
  */
 export async function dispatchPushNotification({ teamId, userId, title, message, url, tag }) {
-  // Try to pre-fetch subscriptions using client's authenticated session
-  let directSubscriptions = [];
-  if (teamId) {
-    try {
-      const { data } = await supabase
-        .from('user_push_subscriptions')
-        .select('id, user_id, subscription')
-        .eq('team_id', teamId);
-      if (data && data.length > 0) {
-        directSubscriptions = data;
-      }
-    } catch (e) {}
-  }
-
-  const payload = {
-    team_id: teamId,
-    user_id: userId,
-    title,
-    message,
-    target_url: url || window.location.origin + '/#/workspace',
-    tag: tag || 'teamspace-alert',
-    direct_subscriptions: directSubscriptions
-  };
-
   try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
+    if (!accessToken) return { success: false };
+
+    const payload = {
+      team_id: teamId,
+      user_id: userId,
+      title,
+      message,
+      target_url: url || window.location.origin + '/#/workspace',
+      tag: tag || 'teamspace-alert'
+    };
+
     const response = await fetch('/api/send-push', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
       body: JSON.stringify(payload)
     });
 
     if (response.ok) {
       const result = await response.json();
-      console.log('✅ Web Push dispatched via Cloudflare:', result);
       return { success: true, ...result };
     }
   } catch (e) {
@@ -212,9 +235,15 @@ export async function dispatchPushNotification({ teamId, userId, title, message,
 }
 
 /**
- * Sends an immediate real test push to this device via Google FCM.
+ * Sends an authenticated test push to this device via Google FCM.
  */
 export async function sendTestPushToDevice() {
+  const { data: { session } } = await supabase.auth.getSession();
+  const accessToken = session?.access_token;
+  if (!accessToken) {
+    throw new Error('Authentication required to send test push.');
+  }
+
   const sub = await getOrRegisterPushSubscription();
   if (!sub) {
     throw new Error('Unable to retrieve push subscription from browser. Please enable notifications.');
@@ -222,7 +251,10 @@ export async function sendTestPushToDevice() {
 
   const response = await fetch('/api/test-push', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
+    },
     body: JSON.stringify({
       subscription: sub.toJSON(),
       title: '📢 TeamSpace Android Push Test',

@@ -3,19 +3,6 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { syncPushSubscriptionWithDatabase, sendTestPushToDevice, dispatchPushNotification } from '../lib/pushService';
 
-const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
-
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
-
 export default function NotificationPreferences() {
   const { user } = useAuth();
   const [permission, setPermission] = useState('default');
@@ -112,64 +99,6 @@ export default function NotificationPreferences() {
     } catch (e) {
       console.warn('Failed to update preference:', e);
     }
-  };
-
-  const registerCurrentDevice = async () => {
-    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !VAPID_PUBLIC_KEY || !user) {
-      return false;
-    }
-
-    try {
-      let reg = await navigator.serviceWorker.getRegistration();
-      if (!reg) {
-        reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
-      }
-      reg = await navigator.serviceWorker.ready;
-      if (!reg || !reg.pushManager) return false;
-
-      let sub = await reg.pushManager.getSubscription();
-      if (!sub) {
-        sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-        });
-      }
-
-      if (sub) {
-        const subJson = sub.toJSON();
-        const endpoint = sub.endpoint || subJson.endpoint;
-
-        // Fetch team memberships
-        const { data: memberTeams } = await supabase
-          .from('team_members')
-          .select('team_id')
-          .eq('user_id', user.id)
-          .eq('status', 'active');
-
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        const deviceType = isAndroid ? 'android' : /Mobile/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-
-        if (memberTeams && memberTeams.length > 0) {
-          for (const m of memberTeams) {
-            await supabase.from('user_push_subscriptions').upsert({
-              user_id: user.id,
-              team_id: m.team_id,
-              subscription: subJson,
-              endpoint: endpoint,
-              device_type: deviceType,
-              user_agent: navigator.userAgent.substring(0, 150),
-              updated_at: new Date().toISOString()
-            });
-          }
-        }
-        await loadDeviceCount();
-        return true;
-      }
-    } catch (err) {
-      console.warn('Subscription registration error:', err);
-      return false;
-    }
-    return false;
   };
 
   const requestNotificationPermission = async () => {

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import NetworkStatus from './NetworkStatus';
 import CompulsoryNameModal from './CompulsoryNameModal';
 import { syncPushSubscriptionWithDatabase } from '../lib/pushService';
+import { getSafeExternalUrl } from '../lib/urlUtils';
 
 export const Layout = ({ children }) => {
   const { user, profile, signOut } = useAuth();
@@ -41,8 +42,8 @@ export const Layout = ({ children }) => {
               <Link to="/workspace" className="btn btn-ghost btn-small">Dashboard</Link>
               <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="AI Chatbot">⚡ AI Chatbot</Link>
               <div className="navbar-avatar" title={profile?.username || 'Profile'}>
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="avatar" className="nav-avatar-img" />
+                {getSafeExternalUrl(profile?.avatar_url) ? (
+                  <img src={getSafeExternalUrl(profile.avatar_url)} alt="avatar" className="nav-avatar-img" />
                 ) : (
                   <div className="nav-avatar-initials">{initials}</div>
                 )}

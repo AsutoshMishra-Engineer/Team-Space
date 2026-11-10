@@ -72,13 +72,25 @@ export default function ManageMembers({ teamId, members, onClose, onMembersChang
       setError('');
       setSuccess('');
 
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id, user_id')
-        .eq('user_id', cleanId)
-        .single();
+      let profile = null;
+      const { data: lookupRes, error: lookupErr } = await supabase.rpc('lookup_user_for_invite', {
+        p_user_id: cleanId
+      });
 
-      if (profileError || !profile) {
+      if (!lookupErr && lookupRes) {
+        if (lookupRes.found) {
+          profile = { id: lookupRes.id, user_id: lookupRes.user_id };
+        }
+      } else {
+        const { data: fallbackProfile } = await supabase
+          .from('profiles')
+          .select('id, user_id')
+          .eq('user_id', cleanId)
+          .single();
+        profile = fallbackProfile;
+      }
+
+      if (!profile) {
         setError(`No account found with User ID "${cleanId}". Double check the ID.`);
         return;
       }

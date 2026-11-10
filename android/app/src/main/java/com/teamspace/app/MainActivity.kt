@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessaging
 import com.teamspace.app.databinding.ActivityMainBinding
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +28,23 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "TeamSpaceMain"
-        const val BASE_URL = "https://teamspace204.asutoshm359.workers.dev"
+        const val ALLOWED_HOST = "teamspace204.asutoshm359.workers.dev"
+        const val BASE_URL = "https://$ALLOWED_HOST"
+
+        fun isTrustedAppUrl(rawUrl: String?): Boolean {
+            if (rawUrl.isNullOrBlank()) return false
+            return try {
+                val uri = Uri.parse(rawUrl.trim())
+                uri.scheme.equals("https", ignoreCase = true) &&
+                    uri.host.equals(ALLOWED_HOST, ignoreCase = true)
+            } catch (_: Exception) {
+                false
+            }
+        }
+
+        fun resolveSafeAppUrl(rawUrl: String?): String {
+            return if (isTrustedAppUrl(rawUrl)) rawUrl!!.trim() else BASE_URL
+        }
     }
 
     // File picker launcher for file uploads inside WebView
@@ -106,8 +123,8 @@ class MainActivity : AppCompatActivity() {
         // 6. Fetch Native FCM Token & Cache
         fetchFcmToken()
 
-        // 7. Load Target URL or Default Homepage
-        val targetUrl = intent?.getStringExtra("target_url") ?: BASE_URL
+        // 7. Load Validated Target URL or Default Homepage
+        val targetUrl = resolveSafeAppUrl(intent?.getStringExtra("target_url"))
         binding.webView.loadUrl(targetUrl)
     }
 
@@ -115,8 +132,8 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         val targetUrl = intent?.getStringExtra("target_url")
-        if (!targetUrl.isNullOrEmpty()) {
-            binding.webView.loadUrl(targetUrl)
+        if (isTrustedAppUrl(targetUrl)) {
+            binding.webView.loadUrl(targetUrl!!.trim())
         }
     }
 
@@ -126,7 +143,8 @@ class MainActivity : AppCompatActivity() {
             javaScriptEnabled = true
             domStorageEnabled = true
             databaseEnabled = true
-            allowFileAccess = true
+            allowFileAccess = false
+            allowContentAccess = false
             useWideViewPort = false
             loadWithOverviewMode = false
             textZoom = 100
@@ -175,21 +193,26 @@ class MainActivity : AppCompatActivity() {
 
         binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                val url = request?.url?.toString() ?: return false
+                val parsedUri = request?.url ?: return true
+                val url = parsedUri.toString()
 
-                // Internal app pages stay inside WebView
-                if (url.contains("teamspace204.asutoshm359.workers.dev") || url.startsWith("file://")) {
+                // Strictly allow only exact TeamSpace HTTPS host inside WebView
+                if (isTrustedAppUrl(url)) {
                     return false
                 }
 
-                // External links (e.g. Google Search, external docs) open in system browser
-                try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    startActivity(intent)
-                    return true
-                } catch (e: Exception) {
-                    return false
+                // External http/https links (e.g. Google Search) open in system browser
+                if (parsedUri.scheme.equals("https", ignoreCase = true) ||
+                    parsedUri.scheme.equals("http", ignoreCase = true)
+                ) {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, parsedUri)
+                        startActivity(intent)
+                    } catch (_: Exception) {
+                        // Ignore if no browser handler exists
+                    }
                 }
+                return true
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -218,13 +241,14 @@ class MainActivity : AppCompatActivity() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val token = task.result
-                Log.d(TAG, "Device FCM Token ready: $token")
+                Log.d(TAG, "Device FCM token synchronized")
                 val prefs = getSharedPreferences(MyFirebaseMessagingService.PREFS_NAME, Context.MODE_PRIVATE)
                 prefs.edit().putString(MyFirebaseMessagingService.KEY_FCM_TOKEN, token).apply()
 
-                // Inject token into webview storage once loaded
+                // Safely quote token before evaluating in WebView JS context
                 binding.webView.post {
-                    val js = "window.__TEAMSPACE_NATIVE_FCM_TOKEN__ = '$token';"
+                    val safeTokenLiteral = JSONObject.quote(token)
+                    val js = "window.__TEAMSPACE_NATIVE_FCM_TOKEN__ = $safeTokenLiteral;"
                     binding.webView.evaluateJavascript(js, null)
                 }
             } else {

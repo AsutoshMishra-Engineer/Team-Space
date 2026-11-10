@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { dispatchPushNotification } from '../lib/pushService';
+import { getSafeExternalUrl } from '../lib/urlUtils';
 
 const PRIORITY_CONFIG = {
   low: { label: 'Low', color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.3)' },
@@ -209,15 +210,9 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
         p_comment: comment
       });
 
-      if (error) {
-        // Fallback direct update
-        await supabase.from('team_tasks').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', taskId);
-        await supabase.from('task_activity_logs').insert({
-          task_id: taskId,
-          user_id: user.id,
-          new_status: newStatus,
-          comment
-        });
+      if (error) throw error;
+      if (data && data.success === false) {
+        throw new Error(data.error || 'Status transition denied');
       }
 
       fetchTasks();
@@ -230,9 +225,15 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
     e.preventDefault();
     if (!showSubmitModal) return;
 
+    const trimmedLink = submissionLink.trim();
+    if (trimmedLink && !getSafeExternalUrl(trimmedLink)) {
+      alert('Submission link must be a valid http:// or https:// URL.');
+      return;
+    }
+
     try {
       setSubmitting(true);
-      const { error } = await supabase.rpc('transition_task_status', {
+      const { data: submitRes, error } = await supabase.rpc('transition_task_status', {
         p_task_id: showSubmitModal.id,
         p_new_status: 'review_pending',
         p_submission_notes: submissionNotes.trim() || null,
@@ -241,6 +242,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
       });
 
       if (error) throw error;
+      if (submitRes && submitRes.success === false) throw new Error(submitRes.error || 'Submission denied');
 
       // Notify team leader
       try {
@@ -280,7 +282,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
         ? `Team leader approved the submission.` 
         : `Leader requested revisions: ${feedbackNotes.trim()}`;
 
-      const { error } = await supabase.rpc('transition_task_status', {
+      const { data: reviewRes, error } = await supabase.rpc('transition_task_status', {
         p_task_id: showReviewModal.id,
         p_new_status: newStatus,
         p_leader_feedback: feedbackNotes.trim() || null,
@@ -288,6 +290,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
       });
 
       if (error) throw error;
+      if (reviewRes && reviewRes.success === false) throw new Error(reviewRes.error || 'Review action denied');
 
       // Push notify assignee
       if (showReviewModal.assigned_to) {
@@ -504,8 +507,8 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                   <div className="task-feedback-box review">
                     <strong style={{ color: '#fbbf24' }}>📤 Member Submission Attached:</strong>
                     <p style={{ margin: '4px 0 0', fontSize: '0.82rem' }}>{task.submission_notes}</p>
-                    {task.submission_link && (
-                      <a href={task.submission_link} target="_blank" rel="noreferrer" className="task-proof-link">
+                    {getSafeExternalUrl(task.submission_link) && (
+                      <a href={getSafeExternalUrl(task.submission_link)} target="_blank" rel="noopener noreferrer" className="task-proof-link">
                         🔗 Open Work Link / PR
                       </a>
                     )}
@@ -793,9 +796,9 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                 <p style={{ margin: '6px 0', fontSize: '0.88rem', color: '#eee', whiteSpace: 'pre-wrap' }}>
                   {showReviewModal.submission_notes || 'No notes provided.'}
                 </p>
-                {showReviewModal.submission_link && (
+                {getSafeExternalUrl(showReviewModal.submission_link) && (
                   <div style={{ marginTop: '8px' }}>
-                    <a href={showReviewModal.submission_link} target="_blank" rel="noreferrer" className="task-proof-link">
+                    <a href={getSafeExternalUrl(showReviewModal.submission_link)} target="_blank" rel="noopener noreferrer" className="task-proof-link">
                       🔗 Open Submitted Work Link
                     </a>
                   </div>

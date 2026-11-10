@@ -1,4 +1,16 @@
 // TeamSpace Production Service Worker for Android Web Push
+function toSameOriginPath(rawUrl) {
+  try {
+    const resolved = new URL(rawUrl || '/', self.location.origin);
+    if (resolved.origin === self.location.origin) {
+      return resolved.href;
+    }
+  } catch (e) {
+    // ignore invalid URL
+  }
+  return self.location.origin + '/';
+}
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
@@ -49,14 +61,15 @@ self.addEventListener('push', (event) => {
   }
 
   const iconUrl = origin + '/logo.png';
+  const safeTargetUrl = toSameOriginPath(data.url);
   const options = {
     body: data.body,
     icon: iconUrl,
     badge: iconUrl,
     tag: data.tag ? `${data.tag}-${Date.now()}` : `teamspace-${Date.now()}`,
     vibrate: [300, 100, 300, 100, 300],
-    data: { 
-      url: data.url || '/',
+    data: {
+      url: safeTargetUrl,
       timestamp: Date.now()
     },
     actions: [
@@ -72,18 +85,18 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// Click notification to open or focus the app
+// Click notification to open or focus the app (same-origin enforced)
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const targetUrl = event.notification.data?.url || '/';
+  const targetUrl = toSameOriginPath(event.notification.data?.url);
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if ('focus' in client && client.url && client.url.includes(self.location.origin)) {
+        if ('focus' in client && client.url && client.url.startsWith(self.location.origin)) {
           client.focus();
-          if ('navigate' in client && targetUrl !== '/') {
+          if ('navigate' in client && targetUrl !== self.location.origin + '/') {
             client.navigate(targetUrl);
           }
           return;

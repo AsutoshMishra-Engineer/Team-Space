@@ -42,32 +42,57 @@ export default function CreateTeamPage() {
       setError('');
       setInviteErrors({});
 
-      const { data: team, error: teamError } = await supabase
-        .from('teams')
-        .insert({ name: name.trim(), project_idea: projectIdea.trim() || null, created_by: user.id })
-        .select()
-        .single();
+      let team = null;
+      const { data: rpcTeamRes, error: rpcTeamErr } = await supabase.rpc('create_team_with_leader', {
+        p_name: name.trim(),
+        p_project_idea: projectIdea.trim() || null
+      });
 
-      if (teamError) throw teamError;
+      if (!rpcTeamErr && rpcTeamRes) {
+        if (rpcTeamRes.success === false) throw new Error(rpcTeamRes.error || 'Failed to create team');
+        team = rpcTeamRes.team;
+      } else {
+        // Fallback if atomic RPC is not yet deployed
+        const { data: fallbackTeam, error: teamError } = await supabase
+          .from('teams')
+          .insert({ name: name.trim(), project_idea: projectIdea.trim() || null, created_by: user.id })
+          .select()
+          .single();
 
-      const { error: leaderError } = await supabase
-        .from('team_members')
-        .insert({ team_id: team.id, user_id: user.id, role: 'leader', status: 'active' });
+        if (teamError) throw teamError;
 
-      if (leaderError) throw leaderError;
+        const { error: leaderError } = await supabase
+          .from('team_members')
+          .insert({ team_id: fallbackTeam.id, user_id: user.id, role: 'leader', status: 'active' });
+
+        if (leaderError) throw leaderError;
+        team = fallbackTeam;
+      }
 
       const errors = {};
       for (let i = 0; i < invites.length; i++) {
         const inviteId = invites[i].trim().toUpperCase();
         if (!inviteId) continue;
 
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('id, user_id')
-          .eq('user_id', inviteId)
-          .single();
+        let profile = null;
+        const { data: lookupRes, error: lookupErr } = await supabase.rpc('lookup_user_for_invite', {
+          p_user_id: inviteId
+        });
 
-        if (profileError || !profile) {
+        if (!lookupErr && lookupRes) {
+          if (lookupRes.found) {
+            profile = { id: lookupRes.id, user_id: lookupRes.user_id };
+          }
+        } else {
+          const { data: fallbackProfile } = await supabase
+            .from('profiles')
+            .select('id, user_id')
+            .eq('user_id', inviteId)
+            .single();
+          profile = fallbackProfile;
+        }
+
+        if (!profile) {
           errors[i] = 'No user found with this ID. Please check and try again.';
           continue;
         }

@@ -34,14 +34,52 @@ jobs:
         with:
           cache-disabled: true
 
-      - name: 🔨 Compile Android APK
+      - name: 🔐 Decode Release Keystore (if configured)
+        id: keystore
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "${{ github.workspace }}/android/app/release.keystore"
+            echo "has_keystore=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️ ANDROID_KEYSTORE_BASE64 not set — building debug APK fallback until signing secrets are configured."
+            echo "has_keystore=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 🔨 Compile Signed Release APK
+        if: steps.keystore.outputs.has_keystore == 'true'
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/android/app/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: 🔨 Compile Debug Fallback APK (when keystore not yet configured)
+        if: steps.keystore.outputs.has_keystore != 'true'
         shell: bash
         run: |
           cd android
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: 📦 Upload APK Artifact
+      - name: 📦 Upload Signed Release APK Artifact
+        if: steps.keystore.outputs.has_keystore == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: TeamSpace-Android-App-Release-APK
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: 📦 Upload Debug Fallback APK Artifact
+        if: steps.keystore.outputs.has_keystore != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: TeamSpace-Android-App-APK
@@ -49,31 +87,27 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: 🚀 Publish Direct Download Release
+      - name: 🚀 Publish Signed Release to GitHub Releases
         uses: softprops/action-gh-release@v2
         continue-on-error: true
-        if: startsWith(github.ref, 'refs/heads/main')
+        if: startsWith(github.ref, 'refs/heads/main') && steps.keystore.outputs.has_keystore == 'true'
         with:
-          tag_name: v1.0.1-android
-          name: "TeamSpace Android App v1.0.1 (Optimized)"
+          tag_name: v1.0.2-android
+          name: "TeamSpace Android App v1.0.2 (Hardened Release)"
           generate_release_notes: false
           body: |
-            ### 🚀 TeamSpace Android App v1.0.1 — Optimized Mobile Release
-
-            This update resolves mobile viewport text overlapping and optimizes push notification status for Android devices.
+            ### 🚀 TeamSpace Android App v1.0.2 — Security-Hardened Release
 
             - **App Name:** TeamSpace
-            - **Version:** `1.0.1` (Build 2)
+            - **Version:** `1.0.2` (Build 3)
             - **Package:** `com.teamspace.app`
-            - **Key Improvements:**
-              - 📱 Native 1:1 mobile viewport rendering (no text overlaps or cramped flex containers).
-              - 🔤 Normalized font scaling across all Android device display settings.
-              - 🔔 Direct Google Firebase Cloud Messaging native status bridge (no "browser unsupported" warnings).
-              - ⚡ Edge-accelerated with instant Swipe-to-Refresh.
-            
-            #### 📲 Installation:
-            1. Download `app-debug.apk` below directly to your phone.
-            2. Tap to install (updates existing TeamSpace app seamlessly).
-          files: android/app/build/outputs/apk/debug/app-debug.apk
+            - **Security & Production Upgrades:**
+              - 🔐 Signed R8-minified release build (`isMinifyEnabled = true`, `allowBackup = false`).
+              - 🛡️ Strict WebView host allowlist & Intent/FCM `target_url` validation.
+              - 🚫 Local `file://` access disabled inside WebView; sanitized FCM token handling.
+
+            #### 📲 Installation Note:
+            If you previously installed an older debug APK (`app-debug.apk`), **uninstall it once** before installing `app-release.apk` (Android requires matching signing keys for in-place updates).
+          files: android/app/build/outputs/apk/release/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

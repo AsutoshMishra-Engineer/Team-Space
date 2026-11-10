@@ -14,19 +14,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-      // Android WebView & Browser Notification Safe Polyfill
-      if (typeof window !== 'undefined' && !('Notification' in window)) {
-        var DummyNotification = function(title, options) {
-          return {};
-        };
-        DummyNotification.permission = 'granted';
-        DummyNotification.requestPermission = function() {
-          return Promise.resolve('granted');
-        };
-        window.Notification = DummyNotification;
-      }
-    </script>
   </head>
   <body>
     <div id="root"></div>

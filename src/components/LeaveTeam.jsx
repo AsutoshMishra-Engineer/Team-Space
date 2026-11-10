@@ -36,21 +36,31 @@ export default function LeaveTeam({ teamId, isLeader, members }) {
     if (!window.confirm('Are you sure you want to transfer leadership to this member?')) return;
     try {
       setProcessing(true);
-      const { error: updateNewLeader } = await supabase
-        .from('team_members')
-        .update({ role: 'leader' })
-        .eq('team_id', teamId)
-        .eq('user_id', newLeaderId);
+      const { data: rpcRes, error: rpcErr } = await supabase.rpc('transfer_team_leadership', {
+        p_team_id: teamId,
+        p_new_leader_id: newLeaderId
+      });
 
-      if (updateNewLeader) throw updateNewLeader;
+      if (!rpcErr && rpcRes) {
+        if (rpcRes.success === false) throw new Error(rpcRes.error || 'Transfer failed');
+      } else {
+        // Fallback if atomic RPC is not yet deployed
+        const { error: updateNewLeader } = await supabase
+          .from('team_members')
+          .update({ role: 'leader' })
+          .eq('team_id', teamId)
+          .eq('user_id', newLeaderId);
 
-      const { error: updateSelf } = await supabase
-        .from('team_members')
-        .update({ role: 'member' })
-        .eq('team_id', teamId)
-        .eq('user_id', user.id);
+        if (updateNewLeader) throw updateNewLeader;
 
-      if (updateSelf) throw updateSelf;
+        const { error: updateSelf } = await supabase
+          .from('team_members')
+          .update({ role: 'member' })
+          .eq('team_id', teamId)
+          .eq('user_id', user.id);
+
+        if (updateSelf) throw updateSelf;
+      }
 
       navigate('/workspace');
     } catch (err) {

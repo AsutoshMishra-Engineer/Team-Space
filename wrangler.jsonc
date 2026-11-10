@@ -6,6 +6,10 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  "vars": {
+    "SUPABASE_URL": "https://gsmbdlujyfoodoaptdpq.supabase.co",
+    "VAPID_SUBJECT": "mailto:admin@teamspace.app"
+  },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
