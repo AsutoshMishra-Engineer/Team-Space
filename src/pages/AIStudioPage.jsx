@@ -17,18 +17,113 @@ export default function AIStudioPage() {
   const [activeModel, setActiveModel] = useState('Active');
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [error, setError] = useState('');
+  const [isAtTop, setIsAtTop] = useState(true);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const [showScrollControls, setShowScrollControls] = useState(false);
+
   const messagesStreamRef = useRef(null);
   const textareaRef = useRef(null);
+  const lastAssistantMsgIndexRef = useRef(null);
 
-  // Smooth scroll ONLY inside the message stream, and NEVER on initial mount
+  // Disable native mobile pull-to-refresh on chat & enforce single-screen lock
   useEffect(() => {
-    if (messages.length > 1 && messagesStreamRef.current) {
+    document.body.classList.add('in-ai-studio');
+    try {
+      if (window.TeamSpaceNative?.setSwipeRefreshEnabled) {
+        window.TeamSpaceNative.setSwipeRefreshEnabled(false);
+      }
+    } catch (_) {}
+
+    return () => {
+      document.body.classList.remove('in-ai-studio');
+      try {
+        if (window.TeamSpaceNative?.setSwipeRefreshEnabled) {
+          window.TeamSpaceNative.setSwipeRefreshEnabled(true);
+        }
+      } catch (_) {}
+    };
+  }, []);
+
+  // Monitor internal stream scroll to update floating jump buttons
+  const handleStreamScroll = () => {
+    const el = messagesStreamRef.current;
+    if (!el) return;
+    const atTop = el.scrollTop <= 60;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= 60;
+    setIsAtTop(atTop);
+    setIsAtBottom(atBottom);
+    setShowScrollControls(!atTop || !atBottom);
+  };
+
+  const scrollToTop = () => {
+    if (messagesStreamRef.current) {
+      messagesStreamRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (messagesStreamRef.current) {
       messagesStreamRef.current.scrollTo({
         top: messagesStreamRef.current.scrollHeight,
         behavior: 'smooth'
       });
     }
-  }, [messages, loading]);
+  };
+
+  const scrollToLastAnswerTop = () => {
+    if (lastAssistantMsgIndexRef.current !== null) {
+      const msgEl = document.getElementById(`ai-msg-${lastAssistantMsgIndexRef.current}`);
+      if (msgEl && messagesStreamRef.current) {
+        const containerRect = messagesStreamRef.current.getBoundingClientRect();
+        const msgRect = msgEl.getBoundingClientRect();
+        const offset = messagesStreamRef.current.scrollTop + (msgRect.top - containerRect.top) - 10;
+        messagesStreamRef.current.scrollTo({
+          top: Math.max(0, offset),
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+
+  // Intelligent Scroll:
+  // - When user posts query: scroll to bottom so prompt & loading indicator are visible.
+  // - When assistant responds: scroll to the START of the new response so user sees the top!
+  // - NEVER re-triggers when loading becomes false, preventing touch locks and jump-snapping.
+  useEffect(() => {
+    if (messages.length <= 1) return;
+
+    const lastIdx = messages.length - 1;
+    const lastMsg = messages[lastIdx];
+
+    if (lastMsg.role === 'assistant') {
+      lastAssistantMsgIndexRef.current = lastIdx;
+      const timer = setTimeout(() => {
+        const msgEl = document.getElementById(`ai-msg-${lastIdx}`);
+        if (msgEl && messagesStreamRef.current) {
+          const containerRect = messagesStreamRef.current.getBoundingClientRect();
+          const msgRect = msgEl.getBoundingClientRect();
+          const offset = messagesStreamRef.current.scrollTop + (msgRect.top - containerRect.top) - 10;
+          messagesStreamRef.current.scrollTo({
+            top: Math.max(0, offset),
+            behavior: 'smooth'
+          });
+        }
+        handleStreamScroll();
+      }, 60);
+      return () => clearTimeout(timer);
+    } else if (lastMsg.role === 'user') {
+      const timer = setTimeout(() => {
+        if (messagesStreamRef.current) {
+          messagesStreamRef.current.scrollTo({
+            top: messagesStreamRef.current.scrollHeight,
+            behavior: 'smooth'
+          });
+        }
+        handleStreamScroll();
+      }, 60);
+      return () => clearTimeout(timer);
+    }
+  }, [messages.length]);
 
   const handleSend = async (customText = null) => {
     const text = (customText || input).trim();
@@ -264,7 +359,7 @@ export default function AIStudioPage() {
             <span style={{ fontSize: '1.4rem' }}>⚡</span>
             <div>
               <h1 style={{ margin: 0, fontSize: '1.3rem', color: '#fff', lineHeight: 1.2 }}>AI Chatbot</h1>
-              <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#8888aa' }}>
+              <p className="ai-studio-desc" style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#8888aa' }}>
                 Dedicated technical workspace for software architecture, code optimization, database schemas, and sprint execution.
               </p>
             </div>
@@ -287,11 +382,11 @@ export default function AIStudioPage() {
       {/* Main Studio Full-Width Chat Box — Single Page, Internal Scroll Only */}
       <div className="ai-studio-full-container">
         <div className="ai-studio-chat-panel">
-          <div className="ai-studio-messages-stream" ref={messagesStreamRef}>
+          <div className="ai-studio-messages-stream" ref={messagesStreamRef} onScroll={handleStreamScroll}>
             {messages.map((msg, i) => {
               const isUser = msg.role === 'user';
               return (
-                <div key={i} className={`ai-studio-msg-row ${isUser ? 'user' : 'bot'}`}>
+                <div key={i} id={`ai-msg-${i}`} className={`ai-studio-msg-row ${isUser ? 'user' : 'bot'}`}>
                   <div className="ai-studio-avatar">
                     {isUser ? '👤' : '⚡'}
                   </div>
@@ -341,6 +436,42 @@ export default function AIStudioPage() {
               </div>
             )}
           </div>
+
+          {/* Quick Floating Navigation Pills for Easy Mobile & Desktop Navigation */}
+          {showScrollControls && (
+            <div className="ai-studio-floating-actions">
+              {!isAtTop && (
+                <button
+                  type="button"
+                  onClick={scrollToTop}
+                  className="ai-studio-floating-btn"
+                  title="Scroll to top of chat"
+                >
+                  ⬆️ Top
+                </button>
+              )}
+              {lastAssistantMsgIndexRef.current !== null && (
+                <button
+                  type="button"
+                  onClick={scrollToLastAnswerTop}
+                  className="ai-studio-floating-btn"
+                  title="Jump to beginning of latest answer"
+                >
+                  🎯 Top of Output
+                </button>
+              )}
+              {!isAtBottom && (
+                <button
+                  type="button"
+                  onClick={scrollToBottom}
+                  className="ai-studio-floating-btn"
+                  title="Jump to bottom of chat"
+                >
+                  ⬇️ Bottom
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Console Input Bar — Pinned at bottom like ChatGPT / Gemini */}
           <div className="ai-studio-input-bar">

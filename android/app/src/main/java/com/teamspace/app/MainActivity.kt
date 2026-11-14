@@ -97,6 +97,9 @@ class MainActivity : AppCompatActivity() {
         binding.swipeRefresh.setOnRefreshListener {
             binding.webView.reload()
         }
+        binding.swipeRefresh.setOnChildScrollUpCallback { _, _ ->
+            binding.webView.canScrollVertically(-1)
+        }
 
         // 3. Setup Retry Button
         binding.btnRetry.setOnClickListener {
@@ -218,6 +221,17 @@ class MainActivity : AppCompatActivity() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 binding.errorView.visibility = View.GONE
                 binding.swipeRefresh.visibility = View.VISIBLE
+                if (url?.contains("/workspace/ai") == true) {
+                    binding.swipeRefresh.isEnabled = false
+                }
+            }
+
+            override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+                super.doUpdateVisitedHistory(view, url, isReload)
+                // Disable pull-to-refresh on internal scroll views like AI Chatbot to prevent swipe capture
+                if (url?.contains("/workspace/ai") == true) {
+                    binding.swipeRefresh.isEnabled = false
+                }
             }
 
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
@@ -257,14 +271,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class WebAppInterface(private val context: Context) {
+    class WebAppInterface(private val activity: MainActivity) {
         @JavascriptInterface
         fun getNativeFcmToken(): String {
-            val prefs = context.getSharedPreferences(MyFirebaseMessagingService.PREFS_NAME, Context.MODE_PRIVATE)
+            val prefs = activity.getSharedPreferences(MyFirebaseMessagingService.PREFS_NAME, Context.MODE_PRIVATE)
             return prefs.getString(MyFirebaseMessagingService.KEY_FCM_TOKEN, "") ?: ""
         }
 
         @JavascriptInterface
         fun isNativeApp(): Boolean = true
+
+        @JavascriptInterface
+        fun setSwipeRefreshEnabled(enabled: Boolean) {
+            activity.runOnUiThread {
+                activity.binding.swipeRefresh.isEnabled = enabled
+            }
+        }
     }
 }
