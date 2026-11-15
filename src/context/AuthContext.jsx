@@ -2,23 +2,33 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 const THEME_COLORS = {
-  Black:  { accent: '#6C63FF', accentLight: 'rgba(108, 99, 255, 0.15)', accentHover: '#5a52e0' },
-  White:  { accent: '#94a3b8', accentLight: 'rgba(148, 163, 184, 0.1)', accentHover: '#cbd5e1' },
-  Yellow: { accent: '#fbbf24', accentLight: 'rgba(251, 191, 36, 0.1)', accentHover: '#f59e0b' },
-  Blue:   { accent: '#3b82f6', accentLight: 'rgba(59, 130, 246, 0.1)', accentHover: '#2563eb' },
-  Green:  { accent: '#34d399', accentLight: 'rgba(52, 211, 153, 0.1)', accentHover: '#10b981' },
-  Pink:   { accent: '#f472b6', accentLight: 'rgba(244, 114, 182, 0.1)', accentHover: '#ec4899' },
-  Brown:  { accent: '#d97706', accentLight: 'rgba(217, 119, 6, 0.1)', accentHover: '#b45309' },
+  // Direct names from PersonalSettings.jsx
+  Indigo:  { accent: '#6366f1', accentLight: 'rgba(99, 102, 241, 0.16)', accentHover: '#4f46e5', glow: 'rgba(99, 102, 241, 0.3)' },
+  Emerald: { accent: '#10b981', accentLight: 'rgba(16, 185, 129, 0.16)', accentHover: '#059669', glow: 'rgba(16, 185, 129, 0.3)' },
+  Sky:     { accent: '#0ea5e9', accentLight: 'rgba(14, 165, 233, 0.16)', accentHover: '#0284c7', glow: 'rgba(14, 165, 233, 0.3)' },
+  Amber:   { accent: '#f59e0b', accentLight: 'rgba(245, 158, 11, 0.16)', accentHover: '#d97706', glow: 'rgba(245, 158, 11, 0.3)' },
+  Rose:    { accent: '#f43f5e', accentLight: 'rgba(244, 63, 94, 0.16)',  accentHover: '#e11d48', glow: 'rgba(244, 63, 94, 0.3)' },
+  Violet:  { accent: '#8b5cf6', accentLight: 'rgba(139, 92, 246, 0.16)', accentHover: '#7c3aed', glow: 'rgba(139, 92, 246, 0.3)' },
+  Slate:   { accent: '#94a3b8', accentLight: 'rgba(148, 163, 184, 0.16)', accentHover: '#64748b', glow: 'rgba(148, 163, 184, 0.3)' },
+
+  // Backward compatibility with previous database profiles
+  Black:   { accent: '#6366f1', accentLight: 'rgba(99, 102, 241, 0.16)', accentHover: '#4f46e5', glow: 'rgba(99, 102, 241, 0.3)' },
+  White:   { accent: '#94a3b8', accentLight: 'rgba(148, 163, 184, 0.16)', accentHover: '#64748b', glow: 'rgba(148, 163, 184, 0.3)' },
+  Yellow:  { accent: '#f59e0b', accentLight: 'rgba(245, 158, 11, 0.16)', accentHover: '#d97706', glow: 'rgba(245, 158, 11, 0.3)' },
+  Blue:    { accent: '#0ea5e9', accentLight: 'rgba(14, 165, 233, 0.16)', accentHover: '#0284c7', glow: 'rgba(14, 165, 233, 0.3)' },
+  Green:   { accent: '#10b981', accentLight: 'rgba(16, 185, 129, 0.16)', accentHover: '#059669', glow: 'rgba(16, 185, 129, 0.3)' },
+  Pink:    { accent: '#f43f5e', accentLight: 'rgba(244, 63, 94, 0.16)',  accentHover: '#e11d48', glow: 'rgba(244, 63, 94, 0.3)' },
+  Brown:   { accent: '#d97706', accentLight: 'rgba(217, 119, 6, 0.16)',  accentHover: '#b45309', glow: 'rgba(217, 119, 6, 0.3)' },
 };
 
 const BG_THEMES = {
-  Dark:      { primary: '#0a0a0f', secondary: '#12121a', card: '#1a1a2e', cardHover: '#22223a', input: '#16162a', border: '#2a2a4a' },
-  Navy:      { primary: '#0a1225', secondary: '#0f1a35', card: '#152244', cardHover: '#1c2d55', input: '#0d1630', border: '#1e3060' },
-  Forest:    { primary: '#081208', secondary: '#0f1e0f', card: '#1a2e1a', cardHover: '#243a24', input: '#0d1a0d', border: '#2a4a2a' },
-  Wine:      { primary: '#150a10', secondary: '#201018', card: '#2e1a24', cardHover: '#3a2230', input: '#1a0d14', border: '#4a2a3a' },
-  Midnight:  { primary: '#08081e', secondary: '#10102e', card: '#1a1a40', cardHover: '#24244e', input: '#0d0d28', border: '#2a2a5a' },
-  Charcoal:  { primary: '#111111', secondary: '#1a1a1a', card: '#252525', cardHover: '#303030', input: '#1e1e1e', border: '#3a3a3a' },
-  Coffee:    { primary: '#140e08', secondary: '#1e1610', card: '#2e221a', cardHover: '#3a2e24', input: '#1a140d', border: '#4a3a2a' },
+  Dark:      { primary: '#09090e', secondary: '#0e0e15', card: '#13131d', cardHover: '#191926', input: '#0c0c13', border: 'rgba(255, 255, 255, 0.08)' },
+  Navy:      { primary: '#060d1a', secondary: '#0b162c', card: '#0f1f3d', cardHover: '#162b54', input: '#0a1426', border: 'rgba(56, 189, 248, 0.15)' },
+  Forest:    { primary: '#051009', secondary: '#0a1d12', card: '#0e291a', cardHover: '#143824', input: '#08170e', border: 'rgba(34, 197, 94, 0.15)' },
+  Wine:      { primary: '#13060c', secondary: '#1e0a13', card: '#2b0f1b', cardHover: '#381423', input: '#15070d', border: 'rgba(244, 63, 94, 0.15)' },
+  Midnight:  { primary: '#060614', secondary: '#0b0b24', card: '#111136', cardHover: '#171747', input: '#09091d', border: 'rgba(129, 140, 248, 0.15)' },
+  Charcoal:  { primary: '#0b0b0d', secondary: '#111115', card: '#16161b', cardHover: '#1d1d24', input: '#0d0d10', border: 'rgba(255, 255, 255, 0.08)' },
+  Coffee:    { primary: '#110b07', secondary: '#1b120c', card: '#261911', cardHover: '#322117', input: '#140d08', border: 'rgba(217, 119, 6, 0.15)' },
 };
 
 const AuthContext = createContext({});
@@ -30,10 +40,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const applyTheme = (colorName) => {
-    const theme = THEME_COLORS[colorName] || THEME_COLORS.Black;
+    const theme = THEME_COLORS[colorName] || THEME_COLORS.Indigo || THEME_COLORS.Black;
     document.documentElement.style.setProperty('--accent', theme.accent);
     document.documentElement.style.setProperty('--accent-light', theme.accentLight);
     document.documentElement.style.setProperty('--accent-hover', theme.accentHover);
+    document.documentElement.style.setProperty('--accent-glow', theme.glow || 'rgba(99, 102, 241, 0.3)');
   };
 
   const applyBackground = (bgName) => {
