@@ -5,6 +5,7 @@ import NetworkStatus from './NetworkStatus';
 import CompulsoryNameModal from './CompulsoryNameModal';
 import { syncPushSubscriptionWithDatabase } from '../lib/pushService';
 import { getSafeExternalUrl } from '../lib/urlUtils';
+import { SparklesIcon, ShieldIcon } from './icons/Icons';
 
 export const Layout = ({ children }) => {
   const { user, profile, signOut } = useAuth();
@@ -42,7 +43,9 @@ export const Layout = ({ children }) => {
                 {profile?.username?.trim() || profile?.user_id || 'Member'}
               </div>
               <Link to="/workspace" className="btn btn-ghost btn-small">Dashboard</Link>
-              <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="AI Chatbot">⚡ AI Chatbot</Link>
+              <Link to="/workspace/ai" className="btn btn-ghost btn-small" title="AI Chatbot">
+                <SparklesIcon size={14} /> AI Chatbot
+              </Link>
               <div className="navbar-avatar" title={profile?.username || 'Profile'}>
                 {getSafeExternalUrl(profile?.avatar_url) ? (
                   <img src={getSafeExternalUrl(profile.avatar_url)} alt="avatar" className="nav-avatar-img" />
@@ -67,7 +70,10 @@ export const Layout = ({ children }) => {
 
       <footer className="global-app-footer">
         <div className="global-app-footer-content">
-          <span className="security-tag-badge">🛡️ Enterprise Grade Security • Role-Governed Access</span>
+          <span className="security-tag-badge">
+            <ShieldIcon size={13} style={{ display: 'inline', verticalAlign: '-1px', marginRight: 4 }} />
+            Enterprise Grade Security • Role-Governed Access
+          </span>
           <span className="footer-copyright-text">TeamSpace Workspace • Self-Hosted &amp; Private</span>
         </div>
       </footer>

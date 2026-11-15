@@ -6,6 +6,7 @@ import PersonalSettings from '../components/PersonalSettings';
 import PersonalTodos from '../components/PersonalTodos';
 import GoogleSearchBar from '../components/GoogleSearchBar';
 import { PageLoader } from '../components/Spinner';
+import { SettingsIcon, PlusIcon, UsersIcon } from '../components/icons/Icons';
 
 export default function MyTeamsPage() {
   const { user, profile } = useAuth();
@@ -56,10 +57,12 @@ export default function MyTeamsPage() {
         <h1>My Teams</h1>
         <div className="flex gap-2">
           <button onClick={() => setShowSettings(true)} className="btn btn-ghost btn-small" title="Personal Settings">
-            ⚙️ Settings
+            <SettingsIcon size={14} /> Settings
           </button>
-          <Link to="/workspace/create" className="btn btn-primary">+ Create a Team</Link>
-          <Link to="/workspace/join" className="btn btn-secondary">Join a Team</Link>
+          <Link to="/workspace/create" className="btn btn-primary btn-small">
+            <PlusIcon size={14} /> Create a Team
+          </Link>
+          <Link to="/workspace/join" className="btn btn-secondary btn-small">Join a Team</Link>
         </div>
       </div>
 
@@ -67,7 +70,9 @@ export default function MyTeamsPage() {
 
       {teams.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">👥</div>
+          <div className="empty-state-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+            <UsersIcon size={44} style={{ opacity: 0.5 }} />
+          </div>
           <div className="empty-state-text">No teams yet</div>
           <p className="text-muted">Create a team or join one to get started</p>
         </div>

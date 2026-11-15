@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { dispatchPushNotification } from '../lib/pushService';
 import { getSafeExternalUrl } from '../lib/urlUtils';
+import { ChatIcon } from './icons/Icons';
 
 export default function TeamChat({ teamId, teamName, isLeader }) {
   const { user, profile } = useAuth();
@@ -208,7 +209,9 @@ export default function TeamChat({ teamId, teamName, isLeader }) {
     <div className="workspace-section wa-chat-section">
       <div className="wa-chat-header">
         <div className="wa-header-info">
-          <div className="wa-header-avatar">💬</div>
+          <div className="wa-header-avatar">
+            <ChatIcon size={18} />
+          </div>
           <div>
             <div className="wa-header-title">Team Chat</div>
             <div className="wa-header-status">
@@ -226,7 +229,7 @@ export default function TeamChat({ teamId, teamName, isLeader }) {
             className="wa-clear-chat-btn"
             title="Delete all messages in this team chat"
           >
-            {clearing ? 'Clearing...' : '🗑️ Clear Chat'}
+            {clearing ? 'Clearing...' : 'Clear Chat'}
           </button>
         )}
       </div>
@@ -234,7 +237,9 @@ export default function TeamChat({ teamId, teamName, isLeader }) {
       <div className="wa-chat-messages" ref={scrollRef}>
         {messages.length === 0 ? (
           <div className="wa-empty-chat">
-            <div className="wa-empty-icon">💬</div>
+            <div className="wa-empty-icon" style={{ display: 'flex', justifyContent: 'center' }}>
+              <ChatIcon size={36} style={{ opacity: 0.4 }} />
+            </div>
             <div className="wa-empty-title">No messages yet</div>
             <div className="wa-empty-subtitle">
               Send a message to start chatting with your team in real time!

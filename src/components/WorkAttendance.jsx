@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { dispatchPushNotification } from '../lib/pushService';
+import { ShieldIcon, PlusIcon } from './icons/Icons';
 
 const STATUS_OPTIONS = [
   { value: 'present', label: 'Present / Full Work', color: '#10b981', bg: 'rgba(16, 185, 129, 0.15)', weight: 1.0 },
@@ -272,20 +273,20 @@ export default function WorkAttendance({ teamId, teamName, isLeader, members = [
           <button 
             type="button" 
             onClick={viewAuditLogs}
-            className="btn btn-secondary btn-sm"
+            className="btn btn-secondary btn-small"
             title="Inspect audit log for leader modifications"
           >
-            🛡️ View Audit Trail
+            <ShieldIcon size={14} /> View Audit Trail
           </button>
 
           {isLeader && (
             <button
               type="button"
               onClick={() => setShowCreateSessionModal(true)}
-              className="btn btn-primary btn-sm"
-              style={{ fontWeight: 700 }}
+              className="btn btn-primary btn-small"
+              style={{ fontWeight: 600 }}
             >
-              ➕ Create Work Session
+              <PlusIcon size={14} /> Create Work Session
             </button>
           )}
         </div>

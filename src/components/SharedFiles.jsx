@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { getSafeExternalUrl } from '../lib/urlUtils';
+import { FolderIcon, DownloadIcon, CloseIcon } from './icons/Icons';
 
 export default function SharedFiles({ teamId, isLeader }) {
   const { user } = useAuth();
@@ -390,7 +391,9 @@ export default function SharedFiles({ teamId, isLeader }) {
         </div>
       ) : filteredFiles.length === 0 ? (
         <div className="pro-files-empty">
-          <div className="pro-empty-art">📁</div>
+          <div className="pro-empty-art" style={{ display: 'flex', justifyContent: 'center' }}>
+            <FolderIcon size={44} style={{ opacity: 0.4 }} />
+          </div>
           <h3>{searchTerm || filterType !== 'all' ? 'No matching files found' : 'No files in this workspace'}</h3>
           <p>
             {searchTerm || filterType !== 'all'
@@ -479,7 +482,7 @@ export default function SharedFiles({ teamId, isLeader }) {
                     className="pro-btn-download"
                     title="Download file"
                   >
-                    {downloadingId === file.id ? '⏳' : '⬇️'}
+                    {downloadingId === file.id ? '...' : <DownloadIcon size={14} />}
                   </button>
 
                   {(file.uploaded_by === user.id || isLeader) && (
@@ -488,7 +491,7 @@ export default function SharedFiles({ teamId, isLeader }) {
                       className="pro-btn-delete"
                       title="Delete file"
                     >
-                      🗑️
+                      <CloseIcon size={14} />
                     </button>
                   )}
                 </div>

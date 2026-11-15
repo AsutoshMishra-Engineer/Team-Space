@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { callGroqWorkEngine, checkWorkRelevance } from '../lib/groqService';
+import { SparklesIcon, CopyIcon, CheckIcon } from '../components/icons/Icons';
 
 export default function AIStudioPage() {
   const { user } = useAuth();
@@ -272,7 +273,8 @@ export default function AIStudioPage() {
                   onClick={() => navigator.clipboard.writeText(codeBuffer.join('\n'))}
                   className="pro-ai-code-copy"
                 >
-                  📋 Copy Code Snippet
+                  <CopyIcon size={12} style={{ display: 'inline', verticalAlign: '-1px', marginRight: 4 }} />
+                  Copy Code
                 </button>
               </div>
               <pre><code>{codeBuffer.join('\n')}</code></pre>
@@ -356,9 +358,11 @@ export default function AIStudioPage() {
             ← Back to Dashboard
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: '1.4rem' }}>⚡</span>
+            <span style={{ display: 'flex', alignItems: 'center', color: 'var(--accent)' }}>
+              <SparklesIcon size={20} />
+            </span>
             <div>
-              <h1 style={{ margin: 0, fontSize: '1.3rem', color: '#fff', lineHeight: 1.2 }}>AI Chatbot</h1>
+              <h1 style={{ margin: 0, fontSize: '1.25rem', color: '#fff', lineHeight: 1.2 }}>AI Chatbot</h1>
               <p className="ai-studio-desc" style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#8888aa' }}>
                 Dedicated technical workspace for software architecture, code optimization, database schemas, and sprint execution.
               </p>
@@ -368,13 +372,13 @@ export default function AIStudioPage() {
 
         <div className="ai-studio-header-actions">
           <span className="ai-studio-status-pill">
-            <span className="pulse-dot-green" /> AI Chatbot · Active
+            <span className="pulse-dot-green" /> Active
           </span>
-          <button onClick={exportMarkdown} className="btn btn-secondary btn-sm" title="Export Markdown Transcript">
-            📥 Export .md
+          <button onClick={exportMarkdown} className="btn btn-secondary btn-small" title="Export Markdown Transcript">
+            Export .md
           </button>
-          <button onClick={clearChat} className="btn btn-secondary btn-sm" title="Clear Conversation">
-            🔄 Clear Session
+          <button onClick={clearChat} className="btn btn-secondary btn-small" title="Clear Conversation">
+            Clear Session
           </button>
         </div>
       </div>
@@ -388,7 +392,7 @@ export default function AIStudioPage() {
               return (
                 <div key={i} id={`ai-msg-${i}`} className={`ai-studio-msg-row ${isUser ? 'user' : 'bot'}`}>
                   <div className="ai-studio-avatar">
-                    {isUser ? '👤' : '⚡'}
+                    {isUser ? '👤' : <SparklesIcon size={16} />}
                   </div>
                   <div className="ai-studio-msg-body">
                     <div className="ai-studio-msg-head">
@@ -401,7 +405,7 @@ export default function AIStudioPage() {
                           className="ai-studio-copy-btn"
                           title="Copy Output"
                         >
-                          {copiedIndex === i ? '✓ Copied' : '📋 Copy'}
+                          {copiedIndex === i ? '✓ Copied' : 'Copy'}
                         </button>
                       )}
                     </div>
@@ -496,7 +500,7 @@ export default function AIStudioPage() {
                 className="btn btn-primary"
                 style={{ padding: '8px 20px', fontWeight: 700 }}
               >
-                {loading ? 'Processing...' : '⚡ Execute Order'}
+                {loading ? 'Processing...' : 'Execute Order'}
               </button>
             </div>
           </div>

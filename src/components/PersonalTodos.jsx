@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { ListTodoIcon, CheckIcon, CloseIcon } from './icons/Icons';
 
 export default function PersonalTodos({ teams }) {
   const { user } = useAuth();
@@ -144,7 +145,9 @@ export default function PersonalTodos({ teams }) {
     <div className="simple-todo-container">
       <div className="simple-todo-header">
         <div>
-          <h3 className="simple-todo-title">📝 My Priority Tasks & Deadlines</h3>
+          <h3 className="simple-todo-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <ListTodoIcon size={16} /> My Priority Tasks &amp; Deadlines
+          </h3>
           <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
             Focus on your top 5 daily priorities
           </span>
@@ -161,7 +164,9 @@ export default function PersonalTodos({ teams }) {
       {isLimitReached ? (
         <div className="priority-limit-banner">
           <div className="limit-banner-header">
-            <span className="limit-banner-icon">🎯</span>
+            <span className="limit-banner-icon" style={{ display: 'flex', alignItems: 'center' }}>
+              <ListTodoIcon size={20} />
+            </span>
             <div>
               <h4 className="limit-banner-title">
                 5 Priority Tasks Limit Reached ({pendingTodos.length}/{MAX_PRIORITY_TASKS})

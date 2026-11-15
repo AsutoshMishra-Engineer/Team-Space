@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ManageMembers from './ManageMembers';
+import { CopyIcon, CheckIcon, UsersIcon, SettingsIcon } from './icons/Icons';
 
 export default function TeamInfoBar({ team, members, isLeader, currentUser, onMembersChange }) {
   const [showManage, setShowManage] = useState(false);
@@ -27,7 +28,9 @@ export default function TeamInfoBar({ team, members, isLeader, currentUser, onMe
     <div className="pro-team-banner">
       <div className="pro-banner-top">
         <div className="pro-banner-identity">
-          <div className="pro-team-avatar">🏢</div>
+          <div className="pro-team-avatar">
+            <UsersIcon size={20} />
+          </div>
           <div>
             <h1 className="pro-team-name">{team.name}</h1>
             {team.project_idea && <p className="pro-team-idea">{team.project_idea}</p>}
@@ -41,7 +44,15 @@ export default function TeamInfoBar({ team, members, isLeader, currentUser, onMe
             <span className="pro-code-value">{team.team_code}</span>
           </div>
           <button onClick={handleCopy} className="pro-code-copy-btn" title="Copy Team Code">
-            {copied ? '✓ Copied' : '📋 Copy'}
+            {copied ? (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <CheckIcon size={13} /> Copied
+              </span>
+            ) : (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <CopyIcon size={13} /> Copy
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -50,7 +61,9 @@ export default function TeamInfoBar({ team, members, isLeader, currentUser, onMe
       <div className="pro-members-strip">
         <div className="pro-strip-left">
           <div className="pro-strip-counts">
-            <span className="pro-strip-badge">👥 {activeMembers.length} Members</span>
+            <span className="pro-strip-badge">
+              <UsersIcon size={13} /> {activeMembers.length} Members
+            </span>
             {pendingMembers.length > 0 && (
               <span className="pro-strip-badge pro-badge-amber">{pendingMembers.length} Pending</span>
             )}
@@ -88,7 +101,7 @@ export default function TeamInfoBar({ team, members, isLeader, currentUser, onMe
             onClick={() => setShowManage(true)}
             className="pro-btn-manage-members"
           >
-            ⚙️ Manage Members
+            <SettingsIcon size={14} /> Manage Members
           </button>
         )}
       </div>

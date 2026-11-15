@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import NotificationPreferences from './NotificationPreferences';
 import { validateDisplayName } from './CompulsoryNameModal';
+import { SettingsIcon, ChatIcon, UsersIcon, BellIcon } from './icons/Icons';
 
 const COLOR_OPTIONS = [
   { name: 'Indigo', swatch: '#6C63FF', label: 'Indigo' },
@@ -123,7 +124,9 @@ export default function PersonalSettings({ onClose }) {
         {/* Modal Top Bar */}
         <div className="pro-settings-top">
           <div className="pro-settings-top-title">
-            <span className="pro-settings-icon">⚙️</span>
+            <span className="pro-settings-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <SettingsIcon size={20} />
+            </span>
             <div>
               <h3>Workspace Preferences & Control Center</h3>
               <p>Personalize your environment, layout themes, and private workspace feed.</p>
@@ -141,28 +144,28 @@ export default function PersonalSettings({ onClose }) {
             className={`pro-settings-tab ${activeTab === 'appearance' ? 'pro-tab-active' : ''}`}
             onClick={() => setActiveTab('appearance')}
           >
-            🎨 Themes & Appearance
+            <SettingsIcon size={14} /> Themes &amp; Appearance
           </button>
           <button
             type="button"
             className={`pro-settings-tab ${activeTab === 'profile' ? 'pro-tab-active' : ''}`}
             onClick={() => setActiveTab('profile')}
           >
-            💭 Personal Quote & Feed
+            <ChatIcon size={14} /> Personal Quote
           </button>
           <button
             type="button"
             className={`pro-settings-tab ${activeTab === 'profile_info' ? 'pro-tab-active' : ''}`}
             onClick={() => setActiveTab('profile_info')}
           >
-            👤 Account Details
+            <UsersIcon size={14} /> Account Details
           </button>
           <button
             type="button"
             className={`pro-settings-tab ${activeTab === 'notifications' ? 'pro-tab-active' : ''}`}
             onClick={() => setActiveTab('notifications')}
           >
-            🔔 Push Notifications
+            <BellIcon size={14} /> Push Notifications
           </button>
         </div>
 

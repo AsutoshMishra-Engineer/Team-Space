@@ -3,21 +3,22 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { dispatchPushNotification } from '../lib/pushService';
 import { getSafeExternalUrl } from '../lib/urlUtils';
+import { TasksIcon, ClockIcon, CheckIcon, PlusIcon } from './icons/Icons';
 
 const PRIORITY_CONFIG = {
-  low: { label: 'Low', color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.3)' },
-  medium: { label: 'Medium', color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.12)', border: 'rgba(251, 191, 36, 0.3)' },
-  high: { label: 'High', color: '#f97316', bg: 'rgba(249, 115, 22, 0.12)', border: 'rgba(249, 115, 22, 0.3)' },
-  critical: { label: '🚨 Critical', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.18)', border: '#ef4444' }
+  low: { label: 'Low', color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.25)' },
+  medium: { label: 'Medium', color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.12)', border: 'rgba(251, 191, 36, 0.25)' },
+  high: { label: 'High', color: '#f97316', bg: 'rgba(249, 115, 22, 0.12)', border: 'rgba(249, 115, 22, 0.25)' },
+  critical: { label: 'Critical', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.16)', border: 'rgba(239, 68, 68, 0.35)' }
 };
 
 const STATUS_CONFIG = {
-  assigned: { label: 'Assigned', badge: 'status-assigned', icon: '📥' },
-  accepted: { label: 'Accepted', badge: 'status-accepted', icon: '👍' },
-  in_progress: { label: 'In Progress', badge: 'status-progress', icon: '⚙️' },
-  review_pending: { label: 'Review Pending', badge: 'status-review', icon: '👀' },
-  completed: { label: 'Completed', badge: 'status-completed', icon: '✅' },
-  changes_requested: { label: 'Changes Requested', badge: 'status-changes', icon: '⚠️' }
+  assigned: { label: 'Assigned', badge: 'status-assigned', dot: '#38bdf8' },
+  accepted: { label: 'Accepted', badge: 'status-accepted', dot: '#818cf8' },
+  in_progress: { label: 'In Progress', badge: 'status-progress', dot: '#fbbf24' },
+  review_pending: { label: 'Review Pending', badge: 'status-review', dot: '#f97316' },
+  completed: { label: 'Completed', badge: 'status-completed', dot: '#22c55e' },
+  changes_requested: { label: 'Changes Requested', badge: 'status-changes', dot: '#ef4444' }
 };
 
 export default function SmartTasks({ teamId, teamName, isLeader, members = [] }) {
@@ -356,7 +357,9 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
       <div className="smart-tasks-header">
         <div>
           <div className="smart-tasks-title">
-            <span style={{ fontSize: '1.4rem' }}>📋</span>
+            <span className="smart-tasks-icon-wrap">
+              <TasksIcon size={20} />
+            </span>
             <div>
               <h3>Smart Task Management</h3>
               <p>6-State lifecycle workflow with leader approvals, checklists & evidence submissions.</p>
@@ -397,10 +400,10 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
             <button 
               type="button" 
               onClick={() => setShowCreateModal(true)}
-              className="btn btn-primary btn-sm"
-              style={{ fontWeight: 700, gap: '6px' }}
+              className="btn btn-primary btn-small"
+              style={{ fontWeight: 600, gap: '6px' }}
             >
-              <span>➕</span> Create New Task
+              <PlusIcon size={14} /> Create New Task
             </button>
           )}
         </div>
@@ -413,7 +416,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
         </div>
       ) : filteredTasks.length === 0 ? (
         <div className="smart-tasks-empty-card">
-          <span style={{ fontSize: '2.5rem' }}>🎯</span>
+          <TasksIcon size={36} style={{ opacity: 0.4, margin: '0 auto 8px auto' }} />
           <h4>No tasks found for this view</h4>
           <p>
             {isLeader 
@@ -447,7 +450,8 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                       {priorityInfo.label}
                     </span>
                     <span className={`task-status-badge ${statusInfo.badge}`}>
-                      {statusInfo.icon} {statusInfo.label}
+                      <span className="task-status-dot" style={{ backgroundColor: statusInfo.dot }} />
+                      {statusInfo.label}
                     </span>
                   </div>
 
@@ -456,7 +460,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                     className="task-btn-history"
                     title="View task activity history"
                   >
-                    🕒 History
+                    <ClockIcon size={12} /> History
                   </button>
                 </div>
 
@@ -543,7 +547,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                       onClick={() => handleTransition(task.id, 'accepted', 'Member accepted task')}
                       className="btn btn-primary btn-sm w-full"
                     >
-                      👍 Accept Task
+                      <CheckIcon size={14} /> Accept Task
                     </button>
                   )}
 
@@ -553,7 +557,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                       onClick={() => handleTransition(task.id, 'in_progress', 'Started working')}
                       className="btn btn-primary btn-sm w-full"
                     >
-                      🚀 Start Working
+                      Start Working
                     </button>
                   )}
 
@@ -567,7 +571,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                       }}
                       className="btn btn-primary btn-sm w-full"
                     >
-                      📤 Submit Work for Review
+                      Submit Work for Review
                     </button>
                   )}
 
@@ -823,7 +827,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                   disabled={reviewing}
                   className="btn btn-danger-action"
                 >
-                  ⚠️ Request Changes
+                  Request Changes
                 </button>
 
                 <button 
@@ -832,7 +836,7 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
                   disabled={reviewing}
                   className="btn btn-approve-action"
                 >
-                  ✅ Approve & Mark Completed
+                  <CheckIcon size={14} /> Approve &amp; Mark Completed
                 </button>
               </div>
             </div>
@@ -846,7 +850,10 @@ export default function SmartTasks({ teamId, teamName, isLeader, members = [] })
           <div className="pro-task-modal">
             <div className="pro-task-modal-header">
               <div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#fff' }}>🕒 Task Activity Audit Log</h3>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#fff' }}>
+                  <ClockIcon size={16} style={{ display: 'inline', verticalAlign: '-2px', marginRight: 6 }} />
+                  Task Activity Audit Log
+                </h3>
                 <p style={{ margin: '3px 0 0', fontSize: '0.8rem', color: '#8888aa' }}>{showHistoryModal.title}</p>
               </div>
               <button onClick={() => setShowHistoryModal(null)} className="pro-settings-close-btn">✕</button>

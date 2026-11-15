@@ -10,6 +10,7 @@ import LeaveTeam from '../components/LeaveTeam';
 import SmartTasks from '../components/SmartTasks';
 import WorkAttendance from '../components/WorkAttendance';
 import { PageLoader } from '../components/Spinner';
+import { MegaphoneIcon, TasksIcon, ClockIcon, FolderIcon } from '../components/icons/Icons';
 
 export default function TeamWorkspacePage() {
   const { teamId } = useParams();
@@ -91,7 +92,8 @@ export default function TeamWorkspacePage() {
           className={`workspace-nav-tab ${activeTab === 'feed' ? 'active' : ''}`}
           onClick={() => setActiveTab('feed')}
         >
-          📢 Announcements & Chat
+          <MegaphoneIcon size={16} />
+          <span>Announcements &amp; Chat</span>
         </button>
 
         <button
@@ -99,7 +101,8 @@ export default function TeamWorkspacePage() {
           className={`workspace-nav-tab ${activeTab === 'tasks' ? 'active' : ''}`}
           onClick={() => setActiveTab('tasks')}
         >
-          📋 Smart Tasks
+          <TasksIcon size={16} />
+          <span>Smart Tasks</span>
         </button>
 
         <button
@@ -107,7 +110,8 @@ export default function TeamWorkspacePage() {
           className={`workspace-nav-tab ${activeTab === 'attendance' ? 'active' : ''}`}
           onClick={() => setActiveTab('attendance')}
         >
-          ⏱️ Work Attendance
+          <ClockIcon size={16} />
+          <span>Work Attendance</span>
         </button>
 
         <button
@@ -115,7 +119,8 @@ export default function TeamWorkspacePage() {
           className={`workspace-nav-tab ${activeTab === 'files' ? 'active' : ''}`}
           onClick={() => setActiveTab('files')}
         >
-          📁 Shared Drive
+          <FolderIcon size={16} />
+          <span>Shared Drive</span>
         </button>
       </div>
 
